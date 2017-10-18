@@ -37,6 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'jokerank',
+    'api'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -121,3 +123,5 @@ def ip_addresses():
 # Discover our IP address
 ALLOWED_HOSTS = ip_addresses()
 
+
+AUTH_USER_MODEL = 'jokerank.User'
