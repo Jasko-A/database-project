@@ -33,5 +33,7 @@ class User(AbstractUser):
     birth_date = models.DateField(null=True, blank=True)
     major = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH, blank=True)
 
+    show_nsfw = models.BooleanField(default=False)
+
     def __unicode__(self):
         return self.username

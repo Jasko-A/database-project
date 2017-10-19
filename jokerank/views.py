@@ -15,6 +15,12 @@ def show_joke(request):
     ''' '''
     available_jokes = Joke.objects.exclude(joke_ratings__user=request.user)
 
+    print available_jokes.count()
+
+    if request.user.show_nsfw == False:
+        available_jokes = available_jokes.exclude(nsfw=True)
+
+    print available_jokes.count()
     # if user has rated all jokes, thank them for their service
     if not available_jokes:
         return render(request, 'jokerank/no-jokes-available.html', {})
