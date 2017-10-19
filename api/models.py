@@ -65,7 +65,14 @@ class JokeRating(models.Model):
     '''
     joke = models.ForeignKey(Joke, related_name='joke_ratings')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='joke_raters')
-    rating = models.FloatField()
+    rating = models.PositiveIntegerField(default=0, choices=(
+            (0, 0),
+            (1, 1),
+            (2, 2),
+            (3, 3),
+            (4, 4),
+            (5, 5)
+        ))
     would_recommend = models.BooleanField(default=False)
 
     def __unicode__(self):
