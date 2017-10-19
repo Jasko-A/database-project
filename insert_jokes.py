@@ -17,13 +17,12 @@ def insert_jokes(filename='jokes.csv'):
 		num = 0
 		firstline = True
 		for row in reader:
-
 			if firstline:
 				firstline = False
 				continue
 
 			joke_text = row[TEXT]
-			joke_category = row[CATEGORY].lower()
+			joke_category = '_'.join(row[CATEGORY].lower().split(' '))
 			joke_subj = row[SUBJECT]
 			joke_type = '_'.join(row[TYPE_OF_JOKE].lower().split(' '))
 			joke_length = row[JOKE_LENGTH].lower()
