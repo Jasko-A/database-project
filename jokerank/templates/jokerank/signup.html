@@ -1,9 +1,14 @@
 <h2>Sign Up (or <a href="{% url 'login' %}">Login</a>)</h2>
+<h4>Starred fields are required.</h4>
 <form method="post" action="{% url 'signup' %}">
 	{% csrf_token %}
 	{% for field in form %}
 	<p>
-		{{ field.label_tag }}<br>
+		{% if field.field.required %}
+			{{ field.label_tag }}*<br>
+		{% else %}
+			{{ field.label_tag }}<br>
+		{% endif %}
 		{{ field }}
 		{% if field.help_text %}
 			<small style="color: grey">{{ field.help_text }}</small>

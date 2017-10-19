@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+
 joke_categories = (
     ('medicine', 'Medicine/Doctor'),
     ('politics', 'Politics'),
