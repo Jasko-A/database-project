@@ -32,7 +32,6 @@ class User(AbstractUser):
 
     birth_date = models.DateField(null=True, blank=True)
     major = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH, blank=True)
-    # ethnicity = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH, blank=True)
-    
+
     def __unicode__(self):
         return self.username

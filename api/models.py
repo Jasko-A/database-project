@@ -13,7 +13,8 @@ joke_categories = (
     ('lawyer', 'Lawyer'),
     ('math', 'Math'),
     ('nerd', 'Nerd'),
-    ('chuck_norris', 'Chuck Norris')
+    ('chuck_norris', 'Chuck Norris'),
+    ('dad', 'Dad')
 )
 
 
@@ -21,7 +22,11 @@ joke_types = (
     ('question', 'Question'),
     ('pun', 'Pun'),
     ('one-liner', 'One-Liner'),
-    ('dialogue', 'Dialogue')
+    ('dialogue', 'Dialogue'),
+    ('pickup_line', 'Pick Up Line'),
+    ('punch_line', 'Punch line'),
+    ('fun_fact', 'Fun Fact'),
+    ('other', 'Other')
 )
 
 
@@ -47,6 +52,7 @@ class Joke(models.Model):
         return 'Joke {0} | {1} | {2}'.format(self.id, self.category, self.joke_type)
 
     def get_current_rating(self):
+        ''' Get mean rating of a joke. Returns an int or string. '''
         from api.models import JokeRating
 
         joke_ratings = JokeRating.objects.filter(joke=self)
@@ -57,7 +63,7 @@ class Joke(models.Model):
                 avg += jrating.rating
             return avg / joke_ratings.count()
         else:
-            return 0.0
+            return "Not yet rated."
 
 
 class JokeRating(models.Model):
