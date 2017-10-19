@@ -13,7 +13,7 @@ def insert_jokes(filename='jokes.csv'):
 	NSFW = 8
 
 	with open(filename, 'r') as csvfile:
-		reader = csv.reader(csvfile)
+		reader = csv.reader(csvfile, delimiter='\t')
 		num = 0
 		firstline = True
 		for row in reader:
