@@ -15,9 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
+
+from jokerank import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^jokerank/', include('jokerank.urls'))
+    url(r'^jokerank/', include('jokerank.urls', namespace='jokerank')),
 
+    url(r'^signup/$', views.signup, name='signup'),
+    url(r'^login/$', auth_views.login, {'template_name': 'jokerank/login.html'}, name='login'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/logout/success/'}, name='logout'),
+    url(r'^logout/success/$', views.logout_success, name='logout_success'),
 ]

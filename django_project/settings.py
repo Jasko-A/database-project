@@ -125,3 +125,12 @@ ALLOWED_HOSTS = ip_addresses()
 
 
 AUTH_USER_MODEL = 'jokerank.User'
+
+
+CHAR_FIELD_MAX_LENGTH = 100
+TEXT_FIELD_MAX_LENGTH = 1000
+
+
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = '/jokerank/'

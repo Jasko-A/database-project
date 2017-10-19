@@ -1,0 +1,10 @@
+{% extends 'jokerank/base.html' %}
+
+{% block content %}
+<h2>Login (or <a href="{% url 'signup' %}">Signup</a>)</h2>
+<form method="post" action="{% url 'login' %}">
+		{% csrf_token %}
+		{{ form.as_p }}
+	<button type="submit">Login</button>
+</form>
+{% endblock %}
