@@ -2,9 +2,11 @@
 
 ## How to access our database through Azure:
 
-1. Install the drivers for SQL Server and Azure. (only for debian)
-...[https://www.microsoft.com/en-us/sql-server/developer-get-started/python/ubuntu/]
-...[https://docs.microsoft.com/en-us/azure/sql-database/sql-database-connect-query-python]
+1. Install the drivers for SQL Server and Azure. 
+
+[https://www.microsoft.com/en-us/sql-server/developer-get-started/python/ubuntu/]
+
+[https://docs.microsoft.com/en-us/azure/sql-database/sql-database-connect-query-python]
 
 2. Get a username, password, and server address from db team.
 
