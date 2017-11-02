@@ -19,7 +19,7 @@ class JokeRatingForm(forms.ModelForm):
 
     class Meta:
         model = JokeRating
-        fields = ('rating', 'would_recommend', 'joke', 'user')
+        fields = ('rating', 'joke', 'joke_rater')
         widgets = {
             'joke': forms.HiddenInput(),
             'user': forms.HiddenInput()
