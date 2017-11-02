@@ -2,17 +2,11 @@
 
 ## How to access our database through Azure:
 
-1. Install the drivers for SQL Server and Azure. 
-
-[Windows](https://sqlchoice.azurewebsites.net/en-us/sql-server/developer-get-started/python/windows/)
-
-[Linux](https://www.microsoft.com/en-us/sql-server/developer-get-started/python/ubuntu/)
-
-[Mac](https://sqlchoice.azurewebsites.net/en-us/sql-server/developer-get-started/python/mac/)
+1. Install the drivers for SQL Server and Azure.  ([Windows](https://sqlchoice.azurewebsites.net/en-us/sql-server/developer-get-started/python/windows/)/[Linux](https://www.microsoft.com/en-us/sql-server/developer-get-started/python/ubuntu/)/[Mac](https://sqlchoice.azurewebsites.net/en-us/sql-server/developer-get-started/python/mac/))
 
 2. Get a username, password, and server address from db team.
 
-3. [Sample program (Linux):](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-connect-query-python)
+3. Run a sample program. [(Linux)](https://docs.microsoft.com/en-us/azure/sql-database/sql-database-connect-query-python)
 
 ```python
 import pyodbc
