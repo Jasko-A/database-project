@@ -1,0 +1,22 @@
+AGES:
+{19: 2, 20: 19, 21: 47, 22: 22, 23: 12, 24: 7, 25: 2, 26: 3, 27: 1, 29: 1, 30: 1}
+
+GENDERS:
+{u'Male': 93, u'Prefer not to say': 1, u'Female': 23}
+
+BIRTH_COUNTRIES:
+{u'': 6, u'Canada': 1, u'Kyrgyzstan': 1, u'Belarus': 1, u'Netherlands': 1, u'Mexico': 2, u'El Salvador': 1, u'Philippines': 1, u'India': 8, u'Korea, South': 1, u'Israel': 1, u'United States': 62, u'Vietnam': 2, u'China': 22, u'Peru': 1, u'Iran': 1, u'Thailand': 1, u'Taiwan': 2, u'Hong Kong': 1, u'Ukraine': 1}
+
+MAJORS:
+{u'Statistics': 11, u'Biochemical Engineering': 1, u'Mechanical Engineering': 1, u'Computer Science and Physcis': 1, u'EE/CE': 1, u'Computer Engineering': 2, u'EEC': 1, u'Electrical Engineering': 3, u'Physics': 3, u'Math': 2, u'Computer Science/CSE': 91}
+
+PREFERRED_JOKE_TYPES:
+{u'': 11, u'Dialogue': 23, u'Puns': 32, u'Fun fact': 6, u'Question': 12, u'One-Liner': 19, u'Punch line': 10, u'Pick-up Line': 4}
+
+PREFERRED_JOKE_GENRES:
+{u'': 9, u'School': 21, u'Lawyer': 3, u'Programming': 63, u'Sports': 12, u'Medicine/Doctor': 4, u'Other': 26, u'Animal': 13, u'Children': 3, u'Politics': 31, u'Nerd': 31, u'Math': 18}
+
+PREFERRED_MOVIE_GENRES:
+{u'Mystery': 8, u'Superhero': 8, u'Family': 1, u'Indie': 2, u'Romantic comedy': 6, u'Horror': 5, u'SciFi': 29, u'Action': 21, u'Comedy': 17, u'Documentary': 6, u'Thriller': 14}
+
+PREFERRED_MUSIC_GENRES:{u'Alternative Rock': 16, u'Classical': 12, u'Indie': 4, u'Country': 4, u'Jazz': 8, u'Metal': 2, u'Pop': 18, u'EDM': 10, u'Rap': 11, u'Rock': 11, u'Blues': 1, u'Hip-Hop': 20}
