@@ -54,6 +54,8 @@ class JokeRater(models.Model):
     A user who went on Google Forms and filled out a form. Not the same as the user that logs in, although
     they are associated.
 
+    TODO: create a relationship between this and a user account (optional).
+
     Related Names: user_ratings
     '''
     joke_submitter_id = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)

@@ -1,3 +1,3 @@
 from django.shortcuts import render
 
-# Create your views here.
+# API doesn't need views (at least yet)

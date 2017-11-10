@@ -8,18 +8,27 @@ User = get_user_model()
 
 
 class SignUpForm(UserCreationForm):
-
+    ''' 
+    Form for registering an account. 
+    Only asks user for username, password, and password confirmation.
+    
+    TODO: update this to make a tie between a user and the jokeratings they have already made
+        that are saved under JokeRater model.
+    '''
     class Meta:
         model = User
         fields = ('username', 'password1', 'password2')
 
 
-class JokeRatingForm(forms.ModelForm):
+# TODO: add a CreateJokeForm
 
-    class Meta:
-        model = JokeRating
-        fields = ('rating', 'joke', 'joke_rater')
-        widgets = {
-            'joke': forms.HiddenInput(),
-            'user': forms.HiddenInput()
-        }
+
+# class JokeRatingForm(forms.ModelForm):
+
+#     class Meta:
+#         model = JokeRating
+#         fields = ('rating', 'joke', 'joke_rater')
+#         widgets = {
+#             'joke': forms.HiddenInput(),
+#             'user': forms.HiddenInput()
+#         }
