@@ -1,33 +1,30 @@
 {% extends 'jokerank/base.html' %}
 
+{# override the title portion of base.html #}
+{% block title %}All Jokes{% endblock %}
+
+{# override the content portion of base.html #}
 {% block content %}
-<h2>{{ joke.joke_text }}</h2>
-
-<hr/>
-
-<form action="{% url 'jokerank:rate_joke' %}" method="post">
-	{{ joke_rating_form }}
-	{% csrf_token %}
-	<button type="submit">Rate Joke</button>
-</form>
-
-
-<h2 id="rating" hidden>Current Rating: {{ current_rating }}</h2>
-<button id="show_rating">Show Current Rating</button>
-
-<script type="text/javascript">
-
-	$(document).off('click', '#show_rating').on('click', '#show_rating', function(e) {
-		if ($('#rating').is(':visible')) {
-			$('#rating').hide();
-			$(this).text('Show Current Rating');
-		} else {
-			$('#rating').show();
-			$(this).text('Hide Current Rating');
-		}
-
-	});
-
-</script>
-
+{% if jokes %}
+<table>
+	<thead>
+		<tr>
+			<th>Joke Text</th>
+			<th>Joke Category</th>
+			<th>Joke Type</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for joke in jokes %}
+			<tr>
+				<td>{{ joke.joke_text }}</td>
+				<td>{{ joke.category }}</td>
+				<td>{{ joke.joke_type }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% else %}
+	<h4>There are no jokes.</h4>
+{% endif %}
 {% endblock %}

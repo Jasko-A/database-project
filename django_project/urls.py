@@ -21,8 +21,12 @@ from jokerank import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include('jokerank.urls', namespace='jokerank')),
 
+    # our apps
+    url(r'^', include('stats.urls', namespace='stats')),
+    url(r'^jokerank/', include('jokerank.urls', namespace='jokerank')),
+
+    # signup/login/logout
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^login/$', auth_views.login, {'template_name': 'jokerank/login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/logout/success/'}, name='logout'),

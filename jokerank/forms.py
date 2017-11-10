@@ -11,8 +11,7 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'password1', 'password2', 'major', 'birth_date','country_of_origin', 
-            'ethnicity', 'pref_joke_type1', 'pref_joke_type2', 'pref_joke_type3', 'pref_joke_category', 'show_nsfw')
+        fields = ('username', 'password1', 'password2')
 
 
 class JokeRatingForm(forms.ModelForm):

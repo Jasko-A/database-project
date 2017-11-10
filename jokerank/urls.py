@@ -4,6 +4,5 @@ from . import views
 
 app_name = 'jokerank'
 urlpatterns = [
-    url(r'^$', views.show_joke, name='show_joke'),
-    url(r'^rate/$', views.rate_joke, name='rate_joke'),
+    url(r'^$', views.show_jokes, name='show_jokes'),
 ]

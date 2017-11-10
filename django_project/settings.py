@@ -39,7 +39,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_countries',
     'jokerank',
-    'api'
+    'api',
+    'stats',
 )
 
 MIDDLEWARE_CLASSES = (

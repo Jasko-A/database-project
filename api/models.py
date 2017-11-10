@@ -2,43 +2,10 @@ from django.db import models
 from django.conf import settings
 
 
-joke_categories = (
-    ('medicine', 'Medicine/Doctor'),
-    ('politics', 'Politics'),
-    ('programming', 'Programming'),
-    ('sports', 'Sports'),
-    ('children', 'Children'),
-    ('school', 'School'),
-    ('animal', 'Animal'),
-    ('lawyer', 'Lawyer'),
-    ('math', 'Math'),
-    ('nerd', 'Nerd'),
-    ('chuck_norris', 'Chuck Norris'),
-    ('dad', 'Dad')
-)
-
-
-joke_types = (
-    ('question', 'Question'),
-    ('pun', 'Pun'),
-    ('one-liner', 'One-Liner'),
-    ('dialogue', 'Dialogue'),
-    ('pickup_line', 'Pick Up Line'),
-    ('punch_line', 'Punch line'),
-    ('fun_fact', 'Fun Fact'),
-    ('other', 'Other')
-)
-
-
-joke_lengths = (
-    ('short', 'Short'),
-    ('medium', 'Medium'),
-    ('long', 'Long')
-)
-
 class Joke(models.Model):
     '''
-    Related fields: joke_ratings
+    Table that contains jokes and their associated fields.
+    Related names: joke_ratings
     '''
     category = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
     joke_source = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
@@ -56,9 +23,7 @@ class Joke(models.Model):
     def get_current_rating(self):
         ''' Get mean rating of a joke. Returns an int or string. '''
         from api.models import JokeRating
-
         joke_ratings = JokeRating.objects.filter(joke=self)
-
         if joke_ratings.count():
             avg = 0.0
             for jrating in joke_ratings:
@@ -70,6 +35,8 @@ class Joke(models.Model):
 
 class JokeRating(models.Model):
     '''
+    Table that contains a JokeRating for an individual joke by an individual JokeRater.
+    Related Names: jokes_submitted
     '''
     joke = models.ForeignKey('Joke', null=True, blank=True, related_name='joke_ratings')
     joke_rater = models.ForeignKey('JokeRater', null=True, blank=True, related_name='user_ratings')
@@ -84,7 +51,10 @@ class JokeRating(models.Model):
 
 class JokeRater(models.Model):
     '''
-    Related models:
+    A user who went on Google Forms and filled out a form. Not the same as the user that logs in, although
+    they are associated.
+
+    Related Names: user_ratings
     '''
     joke_submitter_id = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
 
@@ -108,3 +78,38 @@ class JokeRater(models.Model):
                 self.birth_country
             )
 
+        
+
+# joke_categories = (
+#     ('medicine', 'Medicine/Doctor'),
+#     ('politics', 'Politics'),
+#     ('programming', 'Programming'),
+#     ('sports', 'Sports'),
+#     ('children', 'Children'),
+#     ('school', 'School'),
+#     ('animal', 'Animal'),
+#     ('lawyer', 'Lawyer'),
+#     ('math', 'Math'),
+#     ('nerd', 'Nerd'),
+#     ('chuck_norris', 'Chuck Norris'),
+#     ('dad', 'Dad')
+# )
+
+
+# joke_types = (
+#     ('question', 'Question'),
+#     ('pun', 'Pun'),
+#     ('one-liner', 'One-Liner'),
+#     ('dialogue', 'Dialogue'),
+#     ('pickup_line', 'Pick Up Line'),
+#     ('punch_line', 'Punch line'),
+#     ('fun_fact', 'Fun Fact'),
+#     ('other', 'Other')
+# )
+
+
+# joke_lengths = (
+#     ('short', 'Short'),
+#     ('medium', 'Medium'),
+#     ('long', 'Long')
+# )

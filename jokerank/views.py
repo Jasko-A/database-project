@@ -1,14 +1,45 @@
-import random
-
-from django.contrib.auth import login, authenticate
-from django.shortcuts import render, redirect
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 
-from .forms import SignUpForm, JokeRatingForm
+from .forms import SignUpForm
 from api.models import Joke, JokeRating
 
+
+@login_required
+def show_jokes(request):
+    ''' 
+    Page that shows the list of jokes, allows users to click on them
+    and see their fields, etc.
+
+    Included possible behavior (may do more?)
+    '''
+    jokes = Joke.objects.all()
+    context = {
+        'jokes': jokes
+    }
+    return render(request, 'jokerank/jokes.html', context)
+
+
+# possibly many more views (when user clicks on a joke, etc.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+Example views from the jokerank version of the site.
 
 @login_required
 def show_joke(request):
@@ -49,6 +80,11 @@ def rate_joke(request):
         return redirect(reverse('jokerank:show_joke'))
     else:
         return HttpResponse('Invalid form')
+'''
+
+
+
+
 
 
 ############################ AUTH VIEWS #################################

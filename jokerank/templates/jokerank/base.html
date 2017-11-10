@@ -1,32 +1,34 @@
 <!doctype html>
-
 <html lang="en">
+
 <head>
-  	<meta charset="utf-8">
-
-  	<title>ECS 171 Jokes</title>
-  	<meta name="description" content="ECS 171 Jokes">
-
-  	<script
-	  src="https://code.jquery.com/jquery-3.2.1.min.js"
-	  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-	  crossorigin="anonymous"></script>
-
-  <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
-  <![endif]-->
+    <meta charset="utf-8">
+    <title>{% block title %}ECS 171 Jokes{% endblock %}</title>
+    <meta name="description" content="ECS 171 Jokes">
+    <!--[if lt IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+    <![endif]-->
 </head>
 
 <body>
 {% if user.is_authenticated %}
 <div class="nav-bar">
-		<h2>{{ user.username }} | <a href="{% url 'logout' %}">Logout</a></h2>
+    <h2>{{ user.username }} | <a href="{% url 'logout' %}">Logout</a></h2>
 </div>
 <hr>
 {% endif %}
+
 <div id="content">
-	{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 </div>
 
+
+<script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+
+{# to include your own scripts, override this block #}
+{% block scripts %} {% endblock %}
 </body>
 </html>

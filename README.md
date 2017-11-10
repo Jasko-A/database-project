@@ -24,3 +24,7 @@ while row:
     print (row)
     row = cursor.fetchone()
 ```
+
+## How to run the website locally
+
+Requirements: django1.8.7, django-countries, netifaces, sqlite
