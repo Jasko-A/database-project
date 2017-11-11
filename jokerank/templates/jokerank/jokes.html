@@ -6,25 +6,43 @@
 {# override the content portion of base.html #}
 {% block content %}
 {% if jokes %}
-<table>
-	<thead>
-		<tr>
-			<th>Joke Text</th>
-			<th>Joke Category</th>
-			<th>Joke Type</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for joke in jokes %}
+<h2>All Jokes</h2>
+<div class="table-responsive">
+	<table id="all_jokes_table" class="table table-bordered table-hover table-condensed table-striped">
+		<thead>
 			<tr>
-				<td>{{ joke.joke_text }}</td>
-				<td>{{ joke.category }}</td>
-				<td>{{ joke.joke_type }}</td>
+				<th style="width: 65%;">Text</th>
+				<th style="width: 10%;">Category</th>
+				<th style="width: 10%;">Type</th>
+				<th style="width: 10%;">Subject</th>
+				<th style="width: 5%;">Actions</th>
 			</tr>
-		{% endfor %}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			{% for joke in jokes %}
+				<tr>
+					<td>{{ joke.joke_text }}</td>
+					<td class="centered-text">{{ joke.category|title }}</td>
+					<td class="centered-text">{{ joke.joke_type|title }}</td>
+					<td class="centered-text">{{ joke.subject|title }}</td>
+					<td>
+						<a class="btn" href="{% url 'jokerank:joke_details' joke.id %}">Details</button>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
 {% else %}
 	<h4>There are no jokes.</h4>
 {% endif %}
+{% endblock %}
+
+
+{% block styles %}
+<style>
+	.centered-text {
+		text-align: center;
+	}
+</style>
 {% endblock %}

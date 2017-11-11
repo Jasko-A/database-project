@@ -1,0 +1,11 @@
+{% extends 'jokerank/base.html' %}
+
+{% block title %}Add Joke{% endblock %}
+
+{% block content %}
+<form id="create_joke_form" action="{% url 'jokerank:add_joke' %}" method="POST">
+    {{ create_joke_form }}
+    <button class="btn">Create</button>
+    {% csrf_token %}
+</form>
+{% endblock %}

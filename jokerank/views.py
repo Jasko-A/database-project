@@ -3,12 +3,14 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 
-from .forms import SignUpForm
+from .forms import SignUpForm, CreateJokeForm
 from api.models import Joke, JokeRating
 
 
 @login_required
+@require_http_methods(['GET'])
 def show_jokes(request):
     ''' 
     Page that shows the list of jokes, allows users to click on them
@@ -16,81 +18,63 @@ def show_jokes(request):
 
     Included possible behavior (may do more?)
     '''
-    jokes = Joke.objects.all()
     context = {
-        'jokes': jokes
-    }
-    return render(request, 'jokerank/jokes.html', context)
-
-
-# possibly many more views (when user clicks on a joke, etc.)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-Example views from the jokerank version of the site.
-
-@login_required
-def show_joke(request):
-    ''' '''
-    available_jokes = Joke.objects.exclude(joke_ratings__user=request.user)
-
-    if request.user.show_nsfw == False:
-        available_jokes = available_jokes.exclude(nsfw=True)
-
-    # if user has rated all jokes, thank them for their service
-    if not available_jokes:
-        return render(request, 'jokerank/no-jokes-available.html', {})
-
-    # get a random joke from the set of jokes they haven't rated
-    joke = available_jokes[random.randint(0, available_jokes.count()-1)]
-
-    # TODO: don't pass the joke to the user, they might change it
-    # because they're mean
-    context = {
-        'joke': joke,
-        'current_rating': joke.get_current_rating(),
-        'joke_rating_form': JokeRatingForm(initial={
-            'joke': joke, 'user': request.user})
+        'jokes': Joke.objects.all()
     }
     return render(request, 'jokerank/jokes.html', context)
 
 
 @login_required
-def rate_joke(request):
-    ''' '''
-    if not request.method == 'POST':
-        return HttpResponse('')
-    form = JokeRatingForm(request.POST)
-    if form.is_valid():
-        if form.cleaned_data['user'] != request.user:
-            return HttpResponse('LIAR')
-        form.save()
-        return redirect(reverse('jokerank:show_joke'))
+@require_http_methods(['GET', 'POST'])
+def add_joke(request):
+    ''' 
+    GET request means return the main add joke form page.
+    POST request means try to create the joke they submitted, redirect if success.
+    '''
+    if request.method == 'GET':
+        create_joke_form = CreateJokeForm()
+        context = {
+            'create_joke_form': create_joke_form
+        }
+        return render(request, 'jokerank/add-joke.html', context)
     else:
-        return HttpResponse('Invalid form')
-'''
+        create_joke_form = CreateJokeForm(request.POST)
+        if create_joke_form.is_valid():
+            print "NOT CREATING FORM YET. JUST PRETENDING TO."
+            # create_joke_form.save()
+            return redirect(reverse('jokerank:show_jokes'))
+        else:
+            context = {
+                'create_joke_form': create_joke_form
+            }
+            return render(request, 'jokerank/add-joke.html', context)
+        
 
-
-
-
+@login_required
+@require_http_methods(['GET'])
+def joke_details(request, joke_id):
+    ''' 
+    Render a page containing detials about the joke with ID=joke_id.
+    '''
+    try:
+        joke = Joke.objects.get(id=joke_id)
+    except Exception as e:
+        # TODO: render something about the error or send a message.
+        print "Error @joke_details: {0}.".format(e)
+        return redirect(reverse('jokerank:show_jokes'))
+    context = {
+        'joke': joke
+    }
+    return render(request, 'jokerank/joke.html', context)
 
 
 ############################ AUTH VIEWS #################################
 
+
 def signup(request):
-    ''' View for creating a username/password/info. '''
+    ''' 
+    View for creating a username/password/info. 
+    '''
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -99,12 +83,16 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('jokerank:show_joke')
+            return redirect('jokerank:show_jokes')
         else:
             return HttpResponse('')
     else:
         form = SignUpForm()
     return render(request, 'jokerank/signup.html', {'form': form})
 
+
 def logout_success(request):
+    ''' 
+    On logging out, user is redirected to this page. 
+    '''
     return render(request, 'jokerank/logout-success.html')
