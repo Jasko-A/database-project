@@ -25,6 +25,7 @@ urlpatterns = [
     # our apps
     url(r'^', include('stats.urls', namespace='stats')),
     url(r'^jokerank/', include('jokerank.urls', namespace='jokerank')),
+    url(r'^jokerank/main-page', views.get_main, name='get_main'),
 
     # signup/login/logout
     url(r'^signup/$', views.signup, name='signup'),

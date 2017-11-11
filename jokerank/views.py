@@ -25,7 +25,8 @@ def show_jokes(request):
 
 # possibly many more views (when user clicks on a joke, etc.)
 
-
+def get_main(request):
+    return render(request, 'jokerank/index.html')
 
 
 
@@ -99,7 +100,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('jokerank:show_joke')
+            return redirect('jokerank/index.html')
         else:
             return HttpResponse('')
     else:
