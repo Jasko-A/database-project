@@ -40,8 +40,7 @@ def add_joke(request):
     else:
         create_joke_form = CreateJokeForm(request.POST)
         if create_joke_form.is_valid():
-            print "NOT CREATING FORM YET. JUST PRETENDING TO."
-            # create_joke_form.save()
+            create_joke_form.save(request.user.joke_rater)
             return redirect(reverse('jokerank:show_jokes'))
         else:
             context = {
@@ -68,12 +67,20 @@ def joke_details(request, joke_id):
     return render(request, 'jokerank/joke.html', context)
 
 
+@login_required
+@require_http_methods(['GET'])
+def user_profile(request):
+    ''' '''
+    return render(request, 'jokerank/user-profile.html')
+
+
 ############################ AUTH VIEWS #################################
 
 
 def signup(request):
     ''' 
     View for creating a username/password/info. 
+    TODO: render errors if they input incorrectly.
     '''
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -85,7 +92,10 @@ def signup(request):
             login(request, user)
             return redirect('jokerank:show_jokes')
         else:
-            return HttpResponse('')
+            context = {
+                'form': form
+            }
+            return render(request, 'jokerank/signup.html', {'form': form})
     else:
         form = SignUpForm()
     return render(request, 'jokerank/signup.html', {'form': form})

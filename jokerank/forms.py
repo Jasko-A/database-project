@@ -3,8 +3,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
-from api.models import JokeRating, Joke, JokeRater
+from api.models import JokeRating, Joke, JokeRater, JOKE_CATEGORIES, JOKE_TYPES
 User = get_user_model()
+
+
 
 
 class SignUpForm(UserCreationForm):
@@ -18,6 +20,30 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        ''' '''
+        super(SignUpForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs = {
+            'placeholder': 'Username',
+            'class': 'form-control'
+        }
+
+        self.fields['password1'].widget.attrs = {
+            'placeholder': 'Password',
+            'class': 'form-control'
+        }
+
+        self.fields['password2'].widget.attrs = {
+            'placeholder': 'Password Again',
+            'class': 'form-control'
+        }
+
+        self.fields['joke_submitter_id'].widget.attrs = {
+            'placeholder': 'Joke Submitter ID (optional)',
+            'class': 'form-control'
+        }
+
 
     def save(self, commit=True):
         '''
@@ -39,12 +65,54 @@ class SignUpForm(UserCreationForm):
         return user
 
 
-
 class CreateJokeForm(forms.ModelForm):
     ''' 
     A form for creating a joke.
     joke_source, joke_submitter automatically populated by user who created joke.
     '''
+    
+
     class Meta:
         model = Joke
         fields = ('joke_text', 'category', 'joke_type', 'subject')
+        widgets = {
+            'category': forms.Select(choices=JOKE_CATEGORIES),
+            'joke_type': forms.Select(choices=JOKE_TYPES)
+        }
+
+    def __init__(self, *args, **kwargs):
+        ''' '''
+        super(CreateJokeForm, self).__init__(*args, **kwargs)
+        self.fields['joke_text'].widget.attrs = {
+            'placeholder': 'The joke itself.',
+            'class': 'form-control'
+        }
+
+        self.fields['category'].widget.attrs = {
+            'class': 'form-control'
+        }
+
+        self.fields['joke_type'].widget.attrs = {
+            'class': 'form-control'
+        }
+
+        self.fields['subject'].widget.attrs = {
+            'placeholder': 'Joke Subject (e.g. Donald Trump)',
+            'class': 'form-control'
+        }
+
+    def save(self, joke_submitter, commit=True):
+        '''
+        On saving the model form, auto fill the joke_source and joke_submitter.
+        '''
+        joke = super(CreateJokeForm, self).save(commit=False)
+
+        # update the submitter
+        joke.joke_source = 'website'
+        joke.joke_submitter = joke_submitter
+
+        if commit:
+            joke.save()
+        return joke
+
+

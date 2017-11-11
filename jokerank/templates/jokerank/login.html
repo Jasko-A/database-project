@@ -1,10 +1,26 @@
 {% extends 'jokerank/base.html' %}
 
+{% block login-nav %}class="active"{% endblock%}
+
 {% block content %}
 <h2>Login (or <a href="{% url 'signup' %}">Signup</a>)</h2>
-<form method="post" action="{% url 'login' %}">
-		{% csrf_token %}
-		{{ form.as_p }}
-	<button type="submit">Login</button>
+<hr>
+<form id="login_form" method="POST" action="{% url 'login' %}">
+    {% for field in form %}
+    <div class="form-group">
+        <label>{{ field.label|title }}</label>
+        {{ field }}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn">Login</button>
+	{% csrf_token %}
 </form>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#login_form').find('input').addClass('form-control');
+    });
+</script>
 {% endblock %}

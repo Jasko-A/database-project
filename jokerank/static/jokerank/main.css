@@ -1,14 +1,19 @@
-
 body {
     background-color: beige;
 }
+
 .navbar-inverse {
     background-color: darkcyan;
 }
+
 .navbar-brand {
     font-size: 45px;
 }
 
 .navbar-nav {
     text-align:center;
+}
+
+.container {
+    background-color: #dbdbdb;
 }

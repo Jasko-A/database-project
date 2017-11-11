@@ -25,12 +25,11 @@ urlpatterns = [
     # our apps
     url(r'^', include('stats.urls', namespace='stats')),
     url(r'^jokes/', include('jokerank.urls', namespace='jokerank')),
-    # url(r'^jokerank/', include('jokerank.urls', namespace='jokerank')),
-    # url(r'^jokerank/main-page', views.get_main, name='get_main'),
+
+    url(r'^profile/', views.user_profile, name='user_profile'),
 
     # signup/login/logout
     url(r'^signup/$', views.signup, name='signup'),
     url(r'^login/$', auth_views.login, {'template_name': 'jokerank/login.html'}, name='login'),
-    url(r'^logout/$', auth_views.logout, {'next_page': '/logout/success/'}, name='logout'),
-    url(r'^logout/success/$', views.logout_success, name='logout_success'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
 ]

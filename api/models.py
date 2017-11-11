@@ -2,6 +2,33 @@ from django.db import models
 from django.conf import settings
 
 
+JOKE_CATEGORIES = (
+    ('medicine', 'Medicine/Doctor'),
+    ('politics', 'Politics'),
+    ('programming', 'Programming'),
+    ('sports', 'Sports'),
+    ('children', 'Children'),
+    ('school', 'School'),
+    ('animal', 'Animal'),
+    ('lawyer', 'Lawyer'),
+    ('math', 'Math'),
+    ('nerd', 'Nerd'),
+    ('chuck_norris', 'Chuck Norris'),
+    ('dad', 'Dad')
+)
+
+JOKE_TYPES = (
+    ('question', 'Question'),
+    ('pun', 'Pun'),
+    ('one-liner', 'One-Liner'),
+    ('dialogue', 'Dialogue'),
+    ('pickup_line', 'Pick Up Line'),
+    ('punch_line', 'Punch line'),
+    ('fun_fact', 'Fun Fact'),
+    ('other', 'Other')
+)
+
+
 class Joke(models.Model):
     '''
     Table that contains jokes and their associated fields.
