@@ -7,6 +7,10 @@
 {% block content %}
 <h2>Your Profile (No Private Information Stored)</h2>
 <hr>
-<h2>SOME DATA HERE</h2>
-
+{% if user.joke_rater %}
+	<h4>You made some joke ratings on the Google survey :)</h4>
+	<h4>{{ user.joke_rater }}</h4>
+{% else %}
+	<h4>You aren't connected to any joke ratings.</h4>
+{% endif %}
 {% endblock %}

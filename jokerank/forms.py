@@ -44,6 +44,24 @@ class SignUpForm(UserCreationForm):
             'class': 'form-control'
         }
 
+    def clean_joke_submitter_id(self):
+        '''
+        Check if the joke_submitter_id actually points to a joke rater.
+        '''
+        cleaned_data = self.cleaned_data
+        if 'joke_submitter_id' in cleaned_data.keys():
+            jsmid = cleaned_data.get('joke_submitter_id')
+            if not jsmid: return
+            try:
+                jsm = JokeRater.objects.get(joke_submitter_id=jsmid)
+            except JokeRater.DoesNotExist:
+                raise forms.ValidationError('There is no Joke Rater with id = {0}. Send us an email if you think this is wrong.'.format(jsmid))
+            except JokeRater.MultipleObjectsReturned:
+                raise forms.ValidationError('There are multiple JokeRaters with the same ID = {0}.'.format(
+                    jsmid))
+            except Exception as e:
+                raise forms.ValidationError(e)
+        return cleaned_data.get('joke_submitter_id')
 
     def save(self, commit=True):
         '''
@@ -51,12 +69,10 @@ class SignUpForm(UserCreationForm):
         this user (if they want to).
         '''
         user = super(SignUpForm, self).save(commit=False)
-
         if self.cleaned_data.get('joke_submitter_id'):
             try:
                 joke_rater = JokeRater.objects.get(joke_submitter_id=self.cleaned_data.get('joke_submitter_id'))
                 user.joke_rater = joke_rater
-                user.save()
             except Exception as e:
                 print "ERROR CREATING JOKE RATER -> JOKE USER RELATIONSHIP: {0}".format(e)
 

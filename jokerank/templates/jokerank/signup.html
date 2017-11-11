@@ -6,13 +6,42 @@
 <h2>Create an Account</h2>
 <hr>
 <form method="POST" action="{% url 'signup' %}">
-	{% for field in form %}
 	<div class="form-group">
-		<label>{{ field.label|title }}{% if field.field.required %}*{% endif %}</label>
-		{{ field }}
+		<label>{{ form.username.label|title }}*</label>
+		{{ form.username.errors }}
+		{{ form.username }}
 	</div>
-	{% endfor %}
+
+	<div class="form-group">
+		<label>{{ form.password1.label|title }}*</label>
+		{{ form.password1.errors }}
+		{{ form.password1 }}
+	</div>
+
+	<div class="form-group">
+		<label>{{ form.password2.label|title }}*</label>
+		{{ form.password2.errors }}
+		{{ form.password2 }}
+	</div>
+
+	<hr>
+
+	<div class="form-group">
+		<label>{{ form.joke_submitter_id.label|title }}</label>
+		<h5> (NOTE: This will link your account with the ratings and profile you made in the Google Survey, which is completely optional.)</h5>
+		{{ form.joke_submitter_id.errors }}
+		{{ form.joke_submitter_id }}
+	</div>
 	<button type="submit" class="btn">Sign up</button>
 	{% csrf_token %}
 </form>
+{% endblock %}
+
+{% block styles %}
+<style>
+	ul.errorlist > li {
+		color: #800D0C;
+	}
+
+</style>
 {% endblock %}
