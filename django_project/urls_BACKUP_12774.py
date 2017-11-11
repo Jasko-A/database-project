@@ -24,9 +24,12 @@ urlpatterns = [
 
     # our apps
     url(r'^', include('stats.urls', namespace='stats')),
+<<<<<<< HEAD
     url(r'^jokes/', include('jokerank.urls', namespace='jokerank')),
-    # url(r'^jokerank/', include('jokerank.urls', namespace='jokerank')),
-    # url(r'^jokerank/main-page', views.get_main, name='get_main'),
+=======
+    url(r'^jokerank/', include('jokerank.urls', namespace='jokerank')),
+    url(r'^jokerank/main-page', views.get_main, name='get_main'),
+>>>>>>> e288db0bf57718f64918f17cbd033a1ba12e3194
 
     # signup/login/logout
     url(r'^signup/$', views.signup, name='signup'),

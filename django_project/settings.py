@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
+import netifaces
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -132,6 +132,6 @@ CHAR_FIELD_MAX_LENGTH = 100
 TEXT_FIELD_MAX_LENGTH = 1000
 
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'login' 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'login'

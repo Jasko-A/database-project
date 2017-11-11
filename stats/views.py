@@ -9,4 +9,4 @@ def show_stats(request):
     Render some plots? 
     Figure out how to do this dynamically (not just serving static .png/.jpg files)
     '''
-    return HttpResponse('stats page')
+    return render(request, 'stats/stats.html')
