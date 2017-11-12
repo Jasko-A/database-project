@@ -3,30 +3,30 @@ from django.conf import settings
 
 
 JOKE_CATEGORIES = (
-    ('medicine', 'Medicine/Doctor'),
-    ('politics', 'Politics'),
-    ('programming', 'Programming'),
-    ('sports', 'Sports'),
-    ('children', 'Children'),
-    ('school', 'School'),
-    ('animal', 'Animal'),
-    ('lawyer', 'Lawyer'),
-    ('math', 'Math'),
-    ('nerd', 'Nerd'),
-    ('chuck_norris', 'Chuck Norris'),
-    ('dad', 'Dad')
+    ('Medicine/Doctor', 'Medicine/Doctor'),
+    ('Politics', 'Politics'),
+    ('Programming', 'Programming'),
+    ('Sports', 'Sports'),
+    ('Children', 'Children'),
+    ('School', 'School'),
+    ('Animal', 'Animal'),
+    ('Lawyer', 'Lawyer'),
+    ('Math', 'Math'),
+    ('Nerd', 'Nerd'),
+    ('Chuck Norris', 'Chuck Norris'),
+    ('Dad', 'Dad')
 )
 
 JOKE_TYPES = (
-    ('question', 'Question'),
-    ('pun', 'Pun'),
-    ('one-liner', 'One-liner'),
-    ('dialogue', 'Dialogue'),
-    ('pickup_line', 'Pick Up Line'),
-    ('punch_line', 'Punch line'),
-    ('fun_fact', 'Fun Fact'),
-    ('story', 'Story'),
-    ('other', 'Other')
+    ('Question', 'Question'),
+    ('Pun', 'Pun'),
+    ('One-liner', 'One-liner'),
+    ('Dialogue', 'Dialogue'),
+    ('Pick Up Line', 'Pick Up Line'),
+    ('Punch line', 'Punch line'),
+    ('Fun Fact', 'Fun Fact'),
+    ('Story', 'Story'),
+    ('Other', 'Other')
 )
 
 
