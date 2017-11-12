@@ -1,4 +1,5 @@
 {% extends 'jokerank/base.html' %}
+{% load stats_extras %}
 
 {% block jokes-nav %}class="active"{% endblock %}
 
@@ -9,42 +10,89 @@
 {% block content %}
 {% if jokes %}
 <h2>All Jokes</h2>
-{# <div class="table-responsive"> #}
+<div class="table-responsive">
 	<table id="all_jokes_table" class="table table-bordered table-hover table-condensed table-striped">
 		<thead>
 			<tr>
 				<th style="width: 65%;">Text</th>
-				<th style="width: 10%;">Category</th>
-				<th style="width: 10%;">Type</th>
-				<th style="width: 10%;">Subject</th>
-				<th style="width: 5%;">Actions</th>
+				<th style="width: 10%">Rating</th>
+				<th style="width: 10%;">Actions</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for joke in jokes %}
-				<tr>
+				<tr id="{{ joke.id }}">
 					<td>{{ joke.joke_text }}</td>
-					<td class="centered-text">{{ joke.category|title }}</td>
-					<td class="centered-text">{{ joke.joke_type|title }}</td>
-					<td class="centered-text">{{ joke.subject|title }}</td>
+					<td style="text-align: center; vertical-align: middle;">
+						{% with user_rating=joke|user_joke_rating:user %}
+							{% if user_rating == -1 %}
+								No Associated Rater
+							{% else %}
+								{% for i in '_____' %}
+									<span class="fa fa-star star star{{ forloop.counter }} {% if forloop.counter <= user_rating %}checked {% endif %}"></span>
+								{% endfor %}
+							{% endif %}
+						{% endwith %}
+					</td>
 					<td>
-						<a class="btn" href="{% url 'jokerank:joke_details' joke.id %}">Details</button>
+						<a style="width: 100%;" class="btn btn-default btn-outline-info" href="{% url 'jokerank:joke_details' joke.id %}">Details</button>
 					</td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
-{# </div> #}
+</div>
 {% else %}
 	<h4>There are no jokes.</h4>
 {% endif %}
 {% endblock %}
 
 
+
+{% block scripts %}
+<script type="text/javascript">
+
+	$(document).off('click', '.star').on('click', '.star', function(e) {
+		var $td = $(this).closest('td');
+		var $spans = $td.find('.star');
+		var $clickedStar = $(this);
+		$spans.removeClass('checked');
+		var rating = 0;
+		$spans.each(function() {
+			var r = true;
+			if ($clickedStar.is($(this))) {
+				r = false; // break
+			}
+			$(this).addClass('checked');
+			rating++;
+			return r;
+		});
+
+		var url = "{% url 'stats:update_rating' %}";
+		var post_data = {
+			'rating': rating,
+			'joke_id': $td.closest('tr').attr('id'),
+			'csrfmiddlewaretoken': '{{ csrf_token }}'
+		}
+
+		$.post(url, post_data, function(data) {
+			console.log("success");
+		});
+	});
+
+</script>
+{% endblock %}
+
+
+
 {% block styles %}
 <style>
 	.centered-text {
 		text-align: center;
+	}
+
+	.checked {
+	    color: orange;
 	}
 </style>
 {% endblock %}
