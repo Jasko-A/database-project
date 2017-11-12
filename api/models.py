@@ -59,6 +59,18 @@ class Joke(models.Model):
         else:
             return "Not yet rated."
 
+    def get_rating_distribution(self):
+        ''' Returns a list of how many ratings = 1,2,3,4,5 '''
+        from api.models import JokeRating
+        joke_ratings = JokeRating.objects.filter(joke=self)
+        if joke_ratings.count():
+            counts = [0, 0, 0, 0, 0]
+            for jr in joke_ratings:
+                counts[jr.rating-1] += 1
+            return counts
+        else:
+            return [0, 0, 0, 0, 0]
+
 
 class JokeRating(models.Model):
     '''
