@@ -3,5 +3,56 @@
 {% block title %}Joke: {{ joke.id }}{% endblock %}
 
 {% block content %}
-<h1>TODO: insert data about the joke</h1>
+
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<h2 class="text-center panel-title" style="font-size: 30px">Joke #{{ joke.id }}: {{joke.joke_text }}</h2>
+	</div>
+	<div class = "panel-body">
+		<div class="row">
+			<div class="col-sm-3" style="padding-top: 30px">
+				<ul style="list-style-type: none;">
+					<li><h2>Category: </h2><h4>{{ joke.category }}</h4></li>
+					<li><h2>Subject: </h2><h4>{{ joke.subject }}</h4></li>
+					<li><h2>Type: </h2><h4>{{ joke.joke_type }}</h4></li>
+					<li><h2>Submitted by: </h2><h4>{{ joke.joke_submitter }}</h4></li>
+				</ul>
+			</div>
+			<div class="col-sm-9">
+				<div id="joke_dist"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+var data = [
+  {
+    x: {{ joke_dist_x }},
+    y: {{ joke_dist_y }},
+    type: 'bar',
+    name: 'Ratings'
+  }
+];
+var layout = {
+	title: "Joke Rating",
+
+};
+Plotly.newPlot('joke_dist', data, layout, {displayModeBar: false});
+
+window.onresize = function() {
+	var gd3 = Plotly.d3.select('#joke_dist');
+	var gd = gd3.node();
+
+    Plotly.Plots.resize(gd);
+};
+</script>
 {% endblock %}

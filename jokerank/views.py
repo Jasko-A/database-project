@@ -55,11 +55,15 @@ def joke_details(request, joke_id):
     '''
     try:
         joke = Joke.objects.get(id=joke_id)
+        avg_rating = joke.get_current_rating()
+        rating_distribution = joke.get_rating_distribution()
     except Exception as e:
         print "Error @joke_details: {0}.".format(e)
         return redirect(reverse('jokerank:show_jokes'))
     context = {
-        'joke': joke
+        'joke': joke,
+        'joke_dist_x': [1, 2, 3, 4, 5],
+        'joke_dist_y': rating_distribution
     }
     return render(request, 'jokerank/joke.html', context)
 
