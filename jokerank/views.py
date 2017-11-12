@@ -15,8 +15,6 @@ def show_jokes(request):
     ''' 
     Page that shows the list of jokes, allows users to click on them
     and see their fields, etc.
-
-    Included possible behavior (may do more?)
     '''
     context = {
         'jokes': Joke.objects.all()
@@ -58,7 +56,6 @@ def joke_details(request, joke_id):
     try:
         joke = Joke.objects.get(id=joke_id)
     except Exception as e:
-        # TODO: render something about the error or send a message.
         print "Error @joke_details: {0}.".format(e)
         return redirect(reverse('jokerank:show_jokes'))
     context = {
@@ -70,7 +67,10 @@ def joke_details(request, joke_id):
 @login_required
 @require_http_methods(['GET'])
 def user_profile(request):
-    ''' '''
+    ''' 
+    Render the user's profile, allow them to see the jokes they've rated in 
+    the past (if they've rated jokes).
+    '''
     return render(request, 'jokerank/user-profile.html')
 
 
