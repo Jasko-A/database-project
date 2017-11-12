@@ -5,5 +5,83 @@
 {% block title %}Joke Stats{% endblock %}
 
 {% block content %}
-    <h4>Stats page</h4>
+<h2>JokeDB Overview</h2>
+<hr>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#jokes">Jokes</a></li>
+    <li><a data-toggle="tab" href="#ratings">Ratings</a></li>
+    <li><a data-toggle="tab" href="#raters">Raters</a></li>
+</ul>
+
+<div class="tab-content">
+    <div id="jokes" class="tab-pane fade in active">
+        {% include 'stats/joke-stats.html' %}
+    </div>
+
+    <div id="ratings" class="tab-pane fade">
+        {% include 'stats/rating-stats.html' %}
+    </div>
+    <div id="raters" class="tab-pane fade">
+        {% include 'stats/rater-stats.html' %}
+    </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        // joke vs category
+        var data = [{
+            x: {{ joke_category_x|safe }},
+            y: {{ joke_category_y|safe }},
+            type: 'bar'
+        }];
+        var layout = {
+            title: 'Joke vs. Category'
+        }
+        Plotly.newPlot('joke_vs_category_chart', data, layout, {displayModeBar: false});
+
+        // joke vs type
+        data = [{
+            x: {{ joke_type_x|safe }},
+            y: {{ joke_type_y|safe }},
+            type: 'bar'
+        }];
+        layout = {
+            title: 'Joke vs. Type'
+        }
+        Plotly.newPlot('joke_vs_type_chart', data, layout, {displayModeBar: false});
+
+        // joke vs source
+        data = [{
+            x: {{ joke_source_x|safe }},
+            y: {{ joke_source_y|safe }},
+            type: 'bar'
+        }];
+        layout = {
+            title: 'Joke vs. Source'
+        }
+        Plotly.newPlot('joke_vs_source_chart', data, layout, {displayModeBar: false});
+    });
+
+</script>
+{% endblock %}
+
+
+{% block styles %}
+<style>
+    .col-centered {
+        float: none;
+        margin: 0 auto;
+    }
+
+    .db-count {
+        color: green;
+
+    }
+</style>
 {% endblock %}

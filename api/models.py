@@ -20,13 +20,46 @@ JOKE_CATEGORIES = (
 JOKE_TYPES = (
     ('question', 'Question'),
     ('pun', 'Pun'),
-    ('one-liner', 'One-Liner'),
+    ('one-liner', 'One-liner'),
     ('dialogue', 'Dialogue'),
     ('pickup_line', 'Pick Up Line'),
     ('punch_line', 'Punch line'),
     ('fun_fact', 'Fun Fact'),
+    ('story', 'Story'),
     ('other', 'Other')
 )
+
+
+class JokeManager(models.Manager):
+    ''' '''
+    def category_distribution(self):
+        ''' returns [categories], [counts] '''
+        categories = [t[1] for t in JOKE_CATEGORIES]
+        counts = []
+        for category in categories:
+            counts.append(self.filter(category=category).count())
+        return categories, counts
+
+    def type_distribution(self):
+        ''' returns [types], [counts] '''
+        types = [t[1] for t in JOKE_TYPES]
+        counts = []
+        for joke_type in types:
+            counts.append(self.filter(joke_type=joke_type).count())
+        types.append('None')
+        counts.append(self.filter(joke_type='').count())
+        return types, counts
+
+    def source_distribution(self):
+        ''' '''
+        all_sources = ['Class', 'Data Team', 'Website']
+        counts = []
+        counts.append(self.filter(joke_source__startswith='D').count())
+        counts.append(self.filter(joke_source__startswith='C').count())
+        counts.append(self.filter(joke_source__startswith='W').count())
+        return all_sources, counts
+
+
 
 
 class Joke(models.Model):
@@ -34,6 +67,8 @@ class Joke(models.Model):
     Table that contains jokes and their associated fields.
     Related names: joke_ratings
     '''
+    objects = JokeManager()
+
     category = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
     joke_source = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
     joke_type = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
