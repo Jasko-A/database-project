@@ -41,39 +41,56 @@ class SignUpForm(UserCreationForm):
             'class': 'form-control'
         }
 
-    def clean_joke_submitter_id(self):
-        '''
-        Check if the joke_submitter_id actually points to a joke rater.
-        '''
-        cleaned_data = self.cleaned_data
-        if 'joke_submitter_id' in cleaned_data.keys():
-            jsmid = cleaned_data.get('joke_submitter_id')
-            if not jsmid: return
-            try:
-                jsm = JokeRater.objects.get(joke_submitter_id=jsmid)
-            except JokeRater.DoesNotExist:
-                raise forms.ValidationError('There is no Joke Rater with id = {0}. '
-                    'Send us an email if you think this is wrong.'.format(jsmid))
-            except JokeRater.MultipleObjectsReturned:
-                raise forms.ValidationError('There are multiple JokeRaters with the same ID = {0}.'.format(
-                    jsmid))
-            except Exception as e:
-                raise forms.ValidationError(e)
-        return cleaned_data.get('joke_submitter_id')
+    # def clean_joke_submitter_id(self):
+    #     '''
+    #     Check if the joke_submitter_id actually points to a joke rater.
+    #     '''
+    #     cleaned_data = self.cleaned_data
+    #     if 'joke_submitter_id' in cleaned_data.keys():
+    #         jsmid = cleaned_data.get('joke_submitter_id')
+    #         if not jsmid: return jsmid
+    #         try:
+    #             jsm = JokeRater.objects.get(joke_submitter_id=jsmid)
+    #         except JokeRater.DoesNotExist:
+    #             raise forms.ValidationError('There is no Joke Rater with id = {0}. '
+    #                 'Send us an email if you think this is wrong.'.format(jsmid))
+    #         except JokeRater.MultipleObjectsReturned:
+    #             raise forms.ValidationError('There are multiple JokeRaters with the same ID = {0}.'.format(
+    #                 jsmid))
+    #         except Exception as e:
+    #             raise forms.ValidationError(e)
+
+    #         if jsm.user:
+    #             raise forms.ValidationError('That joke rater is already tied to another user.')
+
+    #     return cleaned_data.get('joke_submitter_id')
 
     def save(self, commit=True):
         '''
         On saving the model form, attempt to create a relationship between a JokeRater and
         this user (if they want to).
         '''
+        errors = []
         user = super(SignUpForm, self).save(commit=False)
-        if self.cleaned_data.get('joke_submitter_id'):
+        jsmid = self.cleaned_data.get('joke_submitter_id')
+        if jsmid:
             try:
                 joke_rater = JokeRater.objects.get(
                     joke_submitter_id=self.cleaned_data.get('joke_submitter_id'))
-                user.joke_rater = joke_rater
-            except Exception as e:
-                print "ERROR CREATING JOKE RATER -> JOKE USER RELATIONSHIP: {0}".format(e)
+            except JokeRater.DoesNotExist: # no joke rater in DB with that ID
+                joke_rater = JokeRater.objects.create(joke_submitter_id=jsmid)
+            except JokeRater.MultipleObjectsReturned: # multiple joke raters with that ID
+                errors.append('Database Corruption. There were multiple JokeRaters with the same ID={0}'.format(jsmid))
+                joke_rater = JokeRater.objects.create()
+
+            # already associated with someone
+            if hasattr(joke_rater, 'user'):
+                errors.append('That joke submitter id is already associated with a user. We created a new one for you.')
+                joke_rater = JokeRater.objects.create()
+        else:
+            joke_rater = JokeRater.objects.create()
+            
+        user.joke_rater = joke_rater
 
         if commit:
             user.save()
@@ -124,4 +141,44 @@ class CreateJokeForm(forms.ModelForm):
             joke.save()
         return joke
 
+
+class EditJokeRaterForm(forms.ModelForm):
+    '''
+    '''
+    class Meta:
+        model = JokeRater
+        exclude = ('joke_submitter_id', 'id')
+
+    def __init__(self, *args, **kwargs):
+        ''' 
+        Initialize the widgets of the form (add the Bootstrap class form-control, placeholders).
+        '''
+        super(EditJokeRaterForm, self).__init__(*args, **kwargs)
+        self.fields['gender'].widget.attrs = {
+            'class': 'form-control'
+        }
+        self.fields['age'].widget.attrs = {
+            'class': 'form-control',
+        }
+        self.fields['birth_country'].widget.attrs = {
+            'class': 'form-control'
+        }
+        self.fields['major'].widget.attrs = {
+            'class': 'form-control'
+        }
+        self.fields['preferred_joke_genre'].widget.attrs = {
+            'class': 'form-control'
+        }
+        self.fields['preferred_joke_genre2'].widget.attrs = {
+            'class': 'form-control'
+        }
+        self.fields['preferred_joke_type'].widget.attrs = {
+            'class': 'form-control'
+        }
+        self.fields['favorite_music_genre'].widget.attrs = {
+            'class': 'form-control'
+        }
+        self.fields['favorite_movie_genre'].widget.attrs = {
+            'class': 'form-control'
+        }
 

@@ -5,12 +5,23 @@
 {% block title %}User Profile{% endblock %}
 
 {% block content %}
-<h2>Your Profile (No Private Information Stored)</h2>
+<h2>Edit your Features</h2>
 <hr>
-{% if user.joke_rater %}
-	<h4>You made some joke ratings on the Google survey :)</h4>
-	<h4>{{ user.joke_rater }}</h4>
-{% else %}
-	<h4>You aren't connected to any joke ratings.</h4>
-{% endif %}
+<div class="panel panel-default">
+    {% if user.joke_rater.joke_submitter_id %}
+        <div class="panel-body">Joke Submitter ID: {{ user.joke_rater.joke_submitter_id }}</div>
+    {% else %}
+        <div class="panel-body">No associated joke submitter ID. (Please contact the Data Team with any problems)</div>
+    {% endif %}
+</div>
+<form id="edit_user_profile" action="{% url 'user_profile' %}" method="POST">
+    {% for field in joke_rater_form %}
+    <div class="form-group">
+        <label>{{ field.label|title }}</label>
+        {{ field }}
+    </div>
+    {% endfor %}
+    <button class="btn btn-primary">Save</button>
+    {% csrf_token %}
+</form>
 {% endblock %}

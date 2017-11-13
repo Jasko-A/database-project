@@ -5,7 +5,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
-from .forms import SignUpForm, CreateJokeForm
+from .forms import SignUpForm, CreateJokeForm, EditJokeRaterForm
 from api.models import Joke, JokeRating
 
 
@@ -69,13 +69,29 @@ def joke_details(request, joke_id):
 
 
 @login_required
-@require_http_methods(['GET'])
+@require_http_methods(['GET', 'POST'])
 def user_profile(request):
     ''' 
-    Render the user's profile, allow them to see the jokes they've rated in 
-    the past (if they've rated jokes).
     '''
-    return render(request, 'jokerank/user-profile.html')
+    if request.method == 'GET':
+        joke_rater = request.user.joke_rater
+        joke_rater_form = EditJokeRaterForm(instance=joke_rater)
+        context = {
+            'joke_rater_form': joke_rater_form
+        }
+        return render(request, 'jokerank/user-profile.html', context)
+    else:
+        joke_rater = request.user.joke_rater
+        joke_rater_form = EditJokeRaterForm(request.POST, instance=joke_rater)
+        if joke_rater_form.is_valid():
+            joke_rater_form.save()
+            return redirect(reverse('stats:show_stats'))
+        else:
+            context = {
+                'joke_rater_form': joke_rater_form
+            }
+            return render(request, 'jokerank/user-profile.html', context)
+
 
 
 ############################ AUTH VIEWS #################################
@@ -94,7 +110,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('stats:show_stats')
+            return redirect(reverse('user_profile'))
         else:
             context = {
                 'form': form
