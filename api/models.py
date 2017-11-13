@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models import Avg
 
 
 JOKE_CATEGORIES = (
@@ -59,6 +60,8 @@ class JokeManager(models.Manager):
         counts.append(self.filter(joke_source__startswith='W').count())
         return all_sources, counts
 
+
+
 class Joke(models.Model):
     '''
     Table that contains jokes and their associated fields.
@@ -89,7 +92,7 @@ class Joke(models.Model):
                 avg += jrating.rating
             return avg / joke_ratings.count()
         else:
-            return "Not yet rated."
+            return -1
 
     def get_rating_distribution(self):
         ''' Returns a list of how many ratings = 1,2,3,4,5 '''
@@ -104,11 +107,58 @@ class Joke(models.Model):
             return [0, 0, 0, 0, 0]
 
 
+
+class JokeRatingManager(models.Manager):
+    ''' 
+    Subclassed manager for the JokeRating Model. 
+    Supplies class-wide methods (kind of like static methods, apply to entire JokeRating table in the db)
+    '''
+    def avg_ratings_joke_type_dist(self):
+        ''' Returns [types], [ratings] '''
+        ratings = []
+        types = [t[1] for t in JOKE_TYPES]
+        for joke_type in types:
+            avg_rating = self.filter(
+                    joke__joke_type=joke_type
+                ).aggregate(Avg('rating'))
+            ratings.append(avg_rating)
+        return types, ratings
+
+    def avg_ratings_joke_category_dist(self):
+        ''' '''
+        ratings = []
+        categories = [t[1] for t in JOKE_CATEGORIES]
+        for category in categories:
+            avg_rating = self.filter(
+                    joke__category=category
+                ).aggregate(Avg('rating'))
+            ratings.append(avg_rating)
+        return categories, ratings
+
+    def num_ratings_joke_type_dist(self):
+        ''' '''
+        counts = []
+        types = [t[1] for t in JOKE_TYPES]
+        for joke_type in types:
+            num_ratings = self.filter(joke__joke_type=joke_type).count()
+            counts.append(num_ratings)
+        return types, counts
+
+    def num_ratings_joke_category_dist(self):
+        ''' '''
+        counts = []
+        categories = [t[1] for t in JOKE_CATEGORIES]
+        for category in categories:
+            num_ratings = self.filter(joke__category=category).count()
+            counts.append(num_ratings)
+        return categories, counts
+
 class JokeRating(models.Model):
     '''
     Table that contains a JokeRating for an individual joke by an individual JokeRater.
     Related Names: jokes_submitted
     '''
+    objects = JokeRatingManager()
     joke = models.ForeignKey('Joke', null=True, blank=True, related_name='joke_ratings')
     joke_rater = models.ForeignKey('JokeRater', null=True, blank=True, related_name='user_ratings')
     rating = models.PositiveIntegerField(default=0)
@@ -118,6 +168,8 @@ class JokeRating(models.Model):
 
     def __str__(self):
         return "{0} | {1} | {2}".format(self.joke, self.joke_rater.joke_submitter_id, self.rating)
+
+
 
 
 class JokeRater(models.Model):

@@ -21,7 +21,9 @@
         {{ field }}
     </div>
     {% endfor %}
-    <button class="btn btn-primary">Save</button>
+    <button class="btn btn-success">Save</button>
+    <a href="{% url 'user_profile' %}" class="btn btn-default btn-danger">Discard</a>
+    <a href="{% url 'stats:show_stats' %}" class="btn btn-default btn-info" style="margin-left:1em;">Home</a>
     {% csrf_token %}
 </form>
 {% endblock %}

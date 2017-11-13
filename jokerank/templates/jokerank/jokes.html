@@ -14,9 +14,9 @@
 	<table id="all_jokes_table" class="table table-bordered table-hover table-condensed table-striped">
 		<thead>
 			<tr>
-				<th style="width: 65%;">Text</th>
-				<th style="width: 10%">Rating</th>
-				<th style="width: 10%;">Actions</th>
+				<th style="width: 74%;">Text</th>
+				<th style="width: 12%">Rating (Click Me!)</th>
+				<th style="width: 12%;">Actions</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -75,9 +75,7 @@
 			'csrfmiddlewaretoken': '{{ csrf_token }}'
 		}
 
-		$.post(url, post_data, function(data) {
-			console.log("success");
-		});
+		$.post(url, post_data);
 	});
 
 </script>
@@ -87,6 +85,18 @@
 
 {% block styles %}
 <style>
+	
+	table#all_jokes_table: {
+		/*table-layout: fixed;*/
+		width: 100%;
+	}
+
+	.joke-text {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
 	.centered-text {
 		text-align: center;
 	}

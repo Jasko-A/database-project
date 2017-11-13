@@ -1,13 +1,16 @@
 {% extends 'jokerank/base.html' %}
+{% load stats_extras %}
+
+{% block jokes-nav %}class="active"{% endblock %}
 
 {% block title %}Joke: {{ joke.id }}{% endblock %}
 
 {% block content %}
-<div class="panel panel-info">
+<div id="{{ joke.id }}" class="panel panel-info">
 	<div class="panel-heading">
-		<h2 class="text-center panel-title" style="font-size: 30px">Joke #{{ joke.id }}: {{joke.joke_text }}</h2>
+		<h2 class="text-center panel-title" style="font-size: 30px">{{joke.joke_text }}</h2>
 	</div>
-	<div class = "panel-body">
+	<div class="panel-body">
 		<div class="row">
 			<div class="col-sm-3" style="padding-top: 30px">
 				<ul style="list-style-type: none;">
@@ -15,7 +18,15 @@
 					<li><h2>Subject: </h2><h4>{{ joke.subject }}</h4></li>
 					<li><h2>Type: </h2><h4>{{ joke.joke_type }}</h4></li>
 					<li><h2>Submitted By: </h2><h4>{{ joke.joke_submitter }}</h4></li>
-                    <li><h2>Average Rating: </h2><h4 style="color: green;">{{ joke.get_current_rating|floatformat:"2" }}</h4></li>
+                    <li><h2>Average Rating: </h2><h4 style="color: green;">
+                        {% with curr_rating=joke.get_current_rating %}
+                            {% if curr_rating == -1 %}
+                                No ratings.
+                            {% else %}
+                                {{ joke.get_current_rating|floatformat:"2" }}
+                            {% endif %}
+                        {% endwith %}
+                    </h4></li>
 				</ul>
 			</div>
 			<div class="col-sm-9">
@@ -24,30 +35,78 @@
 		</div>
 	</div>
 </div>
+
+<div class="row">
+    <div class="col-sm-3 col-sm-offset-9">
+        <div id="{{ joke.id }}" class="panel panel-info" style="padding: 1em; text-align: center;">
+        {% with user_rating=joke|user_joke_rating:user %}
+            {% if user_rating == -1 %}
+                No Associated Rater
+            {% else %}
+                Your rating: 
+                {% for i in '_____' %}
+                    <span class="fa fa-star star star{{ forloop.counter }} {% if forloop.counter <= user_rating %}checked {% endif %}"></span>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        </div>
+    </div>
+</div>
 {# TODO: allow user to change their rating here #}
 {% endblock %}
 
 {% block scripts %}
 <script type="text/javascript">
-    var data = [
-      {
-        x: {{ joke_dist_x }},
-        y: {{ joke_dist_y }},
-        type: 'bar',
-        name: 'Ratings'
-      }
-    ];
-    var layout = {
-    	title: "Joke Rating",
 
-    };
-    Plotly.newPlot('joke_dist', data, layout, {displayModeBar: false});
+    $(document).ready(function() {
+        var data = [
+          {
+            x: {{ joke_dist_x }},
+            y: {{ joke_dist_y }},
+            type: 'bar',
+            name: 'Ratings'
+          }
+        ];
+        var layout = {
+        	title: "Joke Rating",
 
-    window.onresize = function() {
-    	var gd3 = Plotly.d3.select('#joke_dist');
-    	var gd = gd3.node();
+        };
+        Plotly.newPlot('joke_dist', data, layout, {displayModeBar: false});
 
-        Plotly.Plots.resize(gd);
-    };
+        window.onresize = function() {
+        	var gd3 = Plotly.d3.select('#joke_dist');
+        	var gd = gd3.node();
+
+            Plotly.Plots.resize(gd);
+        };
+    });
+
+    $(document).off('click', '.star').on('click', '.star', function(e) {
+        var $panel = $(this).closest('.panel');
+        var $spans = $panel.find('.star');
+        var $clickedStar = $(this);
+        $spans.removeClass('checked');
+        var rating = 0;
+        $spans.each(function() {
+            var r = true;
+            if ($clickedStar.is($(this))) {
+                r = false; // break
+            }
+            $(this).addClass('checked');
+            rating++;
+            return r;
+        });
+
+        var url = "{% url 'stats:update_rating' %}";
+        var post_data = {
+            'rating': rating,
+            'joke_id': $panel.attr('id'),
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        }
+
+        $.post(url, post_data, function(data) {
+            console.log("success");
+        });
+    });
 </script>
 {% endblock %}

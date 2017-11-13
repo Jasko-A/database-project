@@ -32,40 +32,55 @@
 {% block scripts %}
 <script type="text/javascript">
 
-    $(document).ready(function() {
-
-        // joke vs category
+    function createBarChart(x, y, title, containerID) {
         var data = [{
-            x: {{ joke_category_x|safe }},
-            y: {{ joke_category_y|safe }},
-            type: 'bar'
+            x: x,
+            y: y,
+            type: 'bar',
+            name: name
         }];
         var layout = {
-            title: 'Joke vs. Category'
-        }
-        Plotly.newPlot('joke_vs_category_chart', data, layout, {displayModeBar: false});
+            title: title,
 
-        // joke vs type
-        data = [{
-            x: {{ joke_type_x|safe }},
-            y: {{ joke_type_y|safe }},
-            type: 'bar'
-        }];
-        layout = {
-            title: 'Joke vs. Type'
-        }
-        Plotly.newPlot('joke_vs_type_chart', data, layout, {displayModeBar: false});
+        };
+        Plotly.newPlot(containerID, data, layout, {displayModeBar: false});
+    }
 
-        // joke vs source
-        data = [{
-            x: {{ joke_source_x|safe }},
-            y: {{ joke_source_y|safe }},
-            type: 'bar'
+    function createHistogram(x, y, title, containerID) {
+        var data = [{
+            x: x,
+            y: y,
+            type: 'histogram',
+            name: name
         }];
-        layout = {
-            title: 'Joke vs. Source'
-        }
-        Plotly.newPlot('joke_vs_source_chart', data, layout, {displayModeBar: false});
+        var layout = {
+            title: title,
+        };
+        Plotly.newPlot(containerID, data, layout, {displayModeBar: false});
+    }
+
+    $(document).ready(function() {
+        // joke charts
+        createBarChart({{ joke_category_x|safe }}, {{ joke_category_y|safe }}, 'Joke vs. Category', 'joke_vs_category_chart');
+        createBarChart({{ joke_type_x|safe }}, {{ joke_type_y|safe }}, 'Joke vs. Type', 'joke_vs_type_chart');
+        createBarChart({{ joke_source_x|safe }}, {{ joke_source_y|safe }}, 'Joke vs. Source', 'joke_vs_source_chart');
+
+        // rating charts
+        createBarChart({{ num_rating_category_x|safe }}, {{ num_rating_category_y|safe }}, 'Number of Ratings by Category', 'rating_category_count_dist');
+        createBarChart({{ num_rating_type_x|safe }}, {{ num_rating_type_y|safe }}, 'Number of Ratings by Type', 'rating_type_count_dist');
+        createHistogram({{ avg_rating_category_x|safe }}, {{ avg_rating_category_y|safe }}, 'Average Rating by Category', 'rating_category_avg_dist');
+        createHistogram({{ avg_rating_type_x|safe }}, {{ avg_rating_type_y|safe }}, 'Average Rating by Type', 'rating_type_avg_dist');
+
+
+        // createBarChart({{ joke_category_x|safe }}, {{ joke_category_y|safe }}, 'Joke vs. Category', 'joke_vs_category_chart');
+        // createBarChart({{ joke_category_x|safe }}, {{ joke_category_y|safe }}, 'Joke vs. Category', 'joke_vs_category_chart');
+
+                // window.onresize = function() {
+        //     console.log('#' + containerID)
+        //     var gd3 = Plotly.d3.select('#' + containerID);
+        //     var gd = gd3.node();
+        //     Plotly.Plots.resize(gd);
+        // };
     });
 
 </script>

@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import cache_control
 
 from .forms import SignUpForm, CreateJokeForm, EditJokeRaterForm
 from api.models import Joke, JokeRating
@@ -11,6 +13,7 @@ from api.models import Joke, JokeRating
 
 @login_required
 @require_http_methods(['GET'])
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def show_jokes(request):
     ''' 
     Page that shows the list of jokes, allows users to click on them
@@ -49,6 +52,7 @@ def add_joke(request):
 
 @login_required
 @require_http_methods(['GET'])
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def joke_details(request, joke_id):
     ''' 
     Render a page containing detials about the joke with ID=joke_id.
