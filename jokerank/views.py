@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
+from django.contrib import messages
 
 from .forms import SignUpForm, CreateJokeForm, EditJokeRaterForm
 from api.models import Joke, JokeRating
@@ -109,11 +110,15 @@ def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            user, errors = form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
+            print errors
+            for message in errors:
+                print "messaging:", message
+                messages.info(request, message)
             return redirect(reverse('user_profile'))
         else:
             context = {

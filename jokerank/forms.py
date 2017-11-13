@@ -1,3 +1,5 @@
+from iso3166 import countries
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.conf import settings
@@ -79,8 +81,10 @@ class SignUpForm(UserCreationForm):
                     joke_submitter_id=self.cleaned_data.get('joke_submitter_id'))
             except JokeRater.DoesNotExist: # no joke rater in DB with that ID
                 joke_rater = JokeRater.objects.create(joke_submitter_id=jsmid)
+                errors.append('There was no Joke Rater with ID={0}. We created one for you.'.format(jsmid))
             except JokeRater.MultipleObjectsReturned: # multiple joke raters with that ID
-                errors.append('Database Corruption. There were multiple JokeRaters with the same ID={0}'.format(jsmid))
+                errors.append('Database Corruption. There were multiple JokeRaters with the same ID={0}.'.format(jsmid))
+                errors.append('Creating a new joke rater for you to use.')
                 joke_rater = JokeRater.objects.create()
 
             # already associated with someone
@@ -94,7 +98,7 @@ class SignUpForm(UserCreationForm):
 
         if commit:
             user.save()
-        return user
+        return user, errors
 
 
 class CreateJokeForm(forms.ModelForm):
@@ -142,12 +146,69 @@ class CreateJokeForm(forms.ModelForm):
         return joke
 
 
+AGES = tuple([(i, i) for i in range(1, 100)])
+GENDER = (
+    ('Female', 'Female'),
+    ('Male', 'Male'),
+    ('Prefer not to say', 'Prefer not to say'),
+)
+COUNTRIES = tuple([(c.name, c.name) for c in countries])
+MAJOR = (
+    ('Computer Science/CSE', 'Computer Science/CSE'),
+    ('Physics', 'Physics'),
+    ('Math', 'Math'),
+    ('Computer Engineering', 'Computer Engineering'),
+    ('Electrical Engineering', 'Electrical Engineering'),
+    ('Mechanical Engineering', 'Mechanical Engineering'),
+    ('Biochemical Engineering', 'Biochemical Engineering'),
+    ('Other', 'Other')
+)
+MUSIC = (
+    ('Rock', 'Rock'),
+    ('Hip-Hop', 'Hip-Hop'),
+    ('Rap', 'Rap'),
+    ('Metal', 'Metal'),
+    ('Pop', 'Pop'),
+    ('Jazz', 'Jazz'),
+    ('Blues', 'Blues'),
+    ('Country', 'Country'),
+    ('Alternative Rock', 'Alternative Rock'),
+    ('Indie', 'Indie'),
+    ('Reggae', 'Reggae'),
+    ('Classical', 'Classical'),
+    ('EDM', 'EDM')
+)
+MOVIES = (
+    ('Thriller', 'Thriller'),
+    ('Horror', 'Horror'),
+    ('Action', 'Action'),
+    ('Superhero', 'Superhero'),
+    ('Mystery', 'Mystery'),
+    ('Comedy', 'Comedy'),
+    ('Romantic comedy', 'Romantic comedy'),
+    ('SciFi', 'SciFi'),
+    ('Documentary', 'Documentary'),
+    ('Indie', 'Indie'),
+    ('Family', 'Family')
+)
+
 class EditJokeRaterForm(forms.ModelForm):
     '''
     '''
     class Meta:
         model = JokeRater
         exclude = ('joke_submitter_id', 'id')
+        widgets = {
+            'age': forms.Select(choices=AGES),
+            'gender': forms.Select(choices=GENDER),
+            'birth_country': forms.Select(choices=COUNTRIES),
+            'major': forms.Select(choices=MAJOR),
+            'preferred_joke_genre': forms.Select(choices=JOKE_CATEGORIES),
+            'preferred_joke_genre2': forms.Select(choices=JOKE_CATEGORIES),
+            'preferred_joke_type': forms.Select(choices=JOKE_TYPES),
+            'favorite_music_genre': forms.Select(choices=MUSIC),
+            'favorite_movie_genre': forms.Select(choices=MOVIES),
+        }
 
     def __init__(self, *args, **kwargs):
         ''' 

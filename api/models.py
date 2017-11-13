@@ -185,11 +185,11 @@ class JokeRater(models.Model):
 
     gender = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
     age = models.PositiveIntegerField(null=True)
-    birth_country = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
+    birth_country = models.CharField(blank=True, max_length=settings.CHAR_FIELD_MAX_LENGTH)
     major = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
     preferred_joke_genre = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
-    preferred_joke_genre2 = models.CharField(blank=True, max_length=settings.CHAR_FIELD_MAX_LENGTH)
-    preferred_joke_type = models.CharField(blank=True, max_length=settings.CHAR_FIELD_MAX_LENGTH)
+    preferred_joke_genre2 = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
+    preferred_joke_type = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
     favorite_music_genre = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
     favorite_movie_genre = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
 
