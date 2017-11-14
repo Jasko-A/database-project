@@ -23,6 +23,10 @@ def show_stats(request):
     num_rating_type_x, num_rating_type_y = JokeRating.objects.num_ratings_joke_type_dist()
     avg_rating_category_x, avg_rating_category_y = JokeRating.objects.avg_ratings_joke_category_dist()
     avg_rating_type_x, avg_rating_type_y = JokeRating.objects.avg_ratings_joke_type_dist()
+    
+    # rater distribution stuff
+    preferred_joke_genre_x, preferred_joke_genre_y = JokeRater.objects.preferred_joke_genre_dist()
+    preferred_joke_type_x, preferred_joke_type_y = JokeRater.objects.preferred_joke_type_dist()
 
     context = {
     	'num_jokes': Joke.objects.count(),
@@ -37,15 +41,22 @@ def show_stats(request):
     	'joke_source_x': joke_source_x,
     	'joke_source_y': joke_source_y,
 
-        # ratings charts
-        'num_rating_category_x': num_rating_category_x,
-        'num_rating_category_y': num_rating_category_y,
-        'num_rating_type_x': num_rating_type_x,
-        'num_rating_type_y': num_rating_type_y,
-        'avg_rating_category_x': avg_rating_category_x,
-        'avg_rating_category_y': avg_rating_category_y,
-        'avg_rating_type_x': avg_rating_type_x,
-        'avg_rating_type_y': avg_rating_type_y,
+      # ratings charts
+      'num_rating_category_x': num_rating_category_x,
+      'num_rating_category_y': num_rating_category_y,
+      'num_rating_type_x': num_rating_type_x,
+      'num_rating_type_y': num_rating_type_y,
+      'avg_rating_category_x': avg_rating_category_x,
+      'avg_rating_category_y': avg_rating_category_y,
+      'avg_rating_type_x': avg_rating_type_x,
+      'avg_rating_type_y': avg_rating_type_y,
+      
+      # rater charts
+      'preferred_joke_genre_x': preferred_joke_genre_x,
+      'preferred_joke_genre_y': preferred_joke_genre_y,
+      'preferred_joke_type_x': preferred_joke_type_x,
+      'preferred_joke_type_y': preferred_joke_type_y,
+      
     }
     return render(request, 'stats/stats.html', context)
 

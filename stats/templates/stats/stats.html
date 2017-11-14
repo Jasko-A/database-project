@@ -45,6 +45,10 @@
         createBarChart({{ num_rating_type_x|safe }}, {{ num_rating_type_y|safe }}, 'Number of Ratings by Type', 'rating_type_count_dist', false);
         createBarChart({{ avg_rating_category_x|safe }}, {{ avg_rating_category_y|safe }}, 'Average Rating by Category', 'rating_category_avg_dist', true);
         createBarChart({{ avg_rating_type_x|safe }}, {{ avg_rating_type_y|safe }}, 'Average Rating by Type', 'rating_type_avg_dist', true);
+
+        // rater charts
+        createBarChart({{ preferred_joke_genre_x|safe }}, {{ preferred_joke_genre_y|safe }}, 'Preferred Joke Genre', 'preferred_joke_genre');
+        createBarChart({{ preferred_joke_type_x|safe }}, {{ preferred_joke_type_y|safe }}, 'Preferred Joke Type', 'preferred_joke_type');
     });
 
     /* Listener for tab buttons. On changing tabs, resize all charts in the window */
