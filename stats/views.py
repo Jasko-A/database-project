@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 
 from api.models import Joke, JokeRating, JokeRater
 
-# @login_required
+
 def show_stats(request):
     '''
     Home page of stats app, and therefore the whole site.
@@ -23,8 +23,6 @@ def show_stats(request):
     num_rating_type_x, num_rating_type_y = JokeRating.objects.num_ratings_joke_type_dist()
     avg_rating_category_x, avg_rating_category_y = JokeRating.objects.avg_ratings_joke_category_dist()
     avg_rating_type_x, avg_rating_type_y = JokeRating.objects.avg_ratings_joke_type_dist()
-
-    print avg_rating_type_x, avg_rating_type_y
 
     context = {
     	'num_jokes': Joke.objects.count(),

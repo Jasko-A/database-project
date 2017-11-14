@@ -55,12 +55,10 @@ class JokeManager(models.Manager):
         ''' '''
         all_sources = ['Class', 'Data Team', 'Website']
         counts = []
-        counts.append(self.filter(joke_source__startswith='D').count())
         counts.append(self.filter(joke_source__startswith='C').count())
+        counts.append(self.filter(joke_source__startswith='D').count())
         counts.append(self.filter(joke_source__startswith='W').count())
         return all_sources, counts
-
-
 
 class Joke(models.Model):
     '''
@@ -121,7 +119,7 @@ class JokeRatingManager(models.Manager):
             avg_rating = self.filter(
                     joke__joke_type=joke_type
                 ).aggregate(Avg('rating'))
-            ratings.append(avg_rating)
+            ratings.append(avg_rating['rating__avg'])
         return types, ratings
 
     def avg_ratings_joke_category_dist(self):
@@ -132,7 +130,7 @@ class JokeRatingManager(models.Manager):
             avg_rating = self.filter(
                     joke__category=category
                 ).aggregate(Avg('rating'))
-            ratings.append(avg_rating)
+            ratings.append(avg_rating['rating__avg'])
         return categories, ratings
 
     def num_ratings_joke_type_dist(self):
@@ -202,39 +200,3 @@ class JokeRater(models.Model):
                 self.age,
                 self.birth_country
             )
-
-        
-
-# joke_categories = (
-#     ('medicine', 'Medicine/Doctor'),
-#     ('politics', 'Politics'),
-#     ('programming', 'Programming'),
-#     ('sports', 'Sports'),
-#     ('children', 'Children'),
-#     ('school', 'School'),
-#     ('animal', 'Animal'),
-#     ('lawyer', 'Lawyer'),
-#     ('math', 'Math'),
-#     ('nerd', 'Nerd'),
-#     ('chuck_norris', 'Chuck Norris'),
-#     ('dad', 'Dad')
-# )
-
-
-# joke_types = (
-#     ('question', 'Question'),
-#     ('pun', 'Pun'),
-#     ('one-liner', 'One-Liner'),
-#     ('dialogue', 'Dialogue'),
-#     ('pickup_line', 'Pick Up Line'),
-#     ('punch_line', 'Punch line'),
-#     ('fun_fact', 'Fun Fact'),
-#     ('other', 'Other')
-# )
-
-
-# joke_lengths = (
-#     ('short', 'Short'),
-#     ('medium', 'Medium'),
-#     ('long', 'Long')
-# )
