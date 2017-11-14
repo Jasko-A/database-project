@@ -15,7 +15,8 @@ JOKE_CATEGORIES = (
     ('Math', 'Math'),
     ('Nerd', 'Nerd'),
     ('Chuck Norris', 'Chuck Norris'),
-    ('Dad', 'Dad')
+    ('Dad', 'Dad'),
+    ('Other', 'Other')
 )
 
 JOKE_TYPES = (
@@ -170,7 +171,23 @@ class JokeRating(models.Model):
         return "{0} | {1} | {2}".format(self.joke, self.joke_rater.joke_submitter_id, self.rating)
 
 
-
+class JokeRaterManager(models.Manager):
+    ''' '''
+    def preferred_joke_genre_dist(self):
+        ''' '''
+        counts = []
+        genres = [t[1] for t in JOKE_CATEGORIES]
+        for genre in genres:
+            counts.append(self.filter(preferred_joke_genre=genre).count())
+        return genres, counts
+    
+    def preferred_joke_type_dist(self):
+        ''' '''
+        counts = []
+        types = [t[1] for t in JOKE_TYPES]
+        for joke_type in types:
+            counts.append(self.filter(preferred_joke_type=joke_type).count())
+        return types, counts
 
 class JokeRater(models.Model):
     '''
@@ -181,6 +198,7 @@ class JokeRater(models.Model):
 
     Related Names: user_ratings
     '''
+    objects = JokeRaterManager()
     joke_submitter_id = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
 
     gender = models.CharField(max_length=settings.CHAR_FIELD_MAX_LENGTH)
@@ -202,8 +220,6 @@ class JokeRater(models.Model):
                 self.age,
                 self.birth_country
             )
-
-        
 
 # joke_categories = (
 #     ('medicine', 'Medicine/Doctor'),
