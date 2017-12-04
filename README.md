@@ -27,4 +27,20 @@ while row:
 
 ## How to run the website locally
 
-Requirements: django1.8.7, django-countries, netifaces, sqlite
+Requirements (pip2.7): django1.8.7, django-countries, netifaces, iso3166
+Other requirements: sqlite3, copy of the db
+
+1. Clone the repo to your local machine.
+
+2. Get a .sql dump of the database from the db team, put it into the same repo.
+
+3. Create a database using the sql dump.
+
+```
+sqlite3 db.sqlite3
+> .read dump.sql
+```
+
+4. Run the django development server (python manage.py runserver)
+
+5. Navigate to http://127.0.0.1:8000.
