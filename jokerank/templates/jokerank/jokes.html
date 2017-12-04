@@ -37,7 +37,7 @@
 						{% endwith %}
 					</td>
 					<td>{{ joke.cur_ranking }}</td>
-					<td>{{ joke.get_current_rating|floatformat:4 }}</td>
+					<td>{{ joke.average_rating|floatformat:4 }}</td>
 					<td>
 						<a style="width: 100%;" class="btn btn-default btn-outline-info" href="{% url 'jokerank:joke_details' joke.id %}">Details</button>
 					</td>

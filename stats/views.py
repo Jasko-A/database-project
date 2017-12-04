@@ -41,22 +41,21 @@ def show_stats(request):
     	'joke_source_x': joke_source_x,
     	'joke_source_y': joke_source_y,
 
-      # ratings charts
-      'num_rating_category_x': num_rating_category_x,
-      'num_rating_category_y': num_rating_category_y,
-      'num_rating_type_x': num_rating_type_x,
-      'num_rating_type_y': num_rating_type_y,
-      'avg_rating_category_x': avg_rating_category_x,
-      'avg_rating_category_y': avg_rating_category_y,
-      'avg_rating_type_x': avg_rating_type_x,
-      'avg_rating_type_y': avg_rating_type_y,
-      
-      # rater charts
-      'preferred_joke_genre_x': preferred_joke_genre_x,
-      'preferred_joke_genre_y': preferred_joke_genre_y,
-      'preferred_joke_type_x': preferred_joke_type_x,
-      'preferred_joke_type_y': preferred_joke_type_y,
-      
+        # ratings charts
+        'num_rating_category_x': num_rating_category_x,
+        'num_rating_category_y': num_rating_category_y,
+        'num_rating_type_x': num_rating_type_x,
+        'num_rating_type_y': num_rating_type_y,
+        'avg_rating_category_x': avg_rating_category_x,
+        'avg_rating_category_y': avg_rating_category_y,
+        'avg_rating_type_x': avg_rating_type_x,
+        'avg_rating_type_y': avg_rating_type_y,
+
+        # rater charts
+        'preferred_joke_genre_x': preferred_joke_genre_x,
+        'preferred_joke_genre_y': preferred_joke_genre_y,
+        'preferred_joke_type_x': preferred_joke_type_x,
+        'preferred_joke_type_y': preferred_joke_type_y,
     }
     return render(request, 'stats/stats.html', context)
 
@@ -64,41 +63,35 @@ def show_stats(request):
 @login_required
 @require_http_methods(['POST'])
 def update_rating(request):
-    ''' '''
-    if not request.user.joke_rater:
-        # print "no joke rater"
-        return HttpResponse('')
-
+    ''' 
+    On clicking a star to change a ranking.
+    '''
     rating = request.POST.get('rating', None)
-    if not rating:
-        # print "invalid rating"
-        return HttpResponse('')
-    rating = int(rating)
-    if rating > 5 or rating < 1:
-        # print "invalid rating (not in range)"
+    if rating: rating = int(rating)
+    
+    # return empty if user is spoofing their response somehow
+    if not request.user.joke_rater or not rating or rating > 5 or rating < 1:
         return HttpResponse('')
 
+    # make sure joke id given is valid (assume they didn't modify this, 
+    # not great assumption but website is private soooo)
     try:
         joke = Joke.objects.get(id=request.POST.get('joke_id'))
     except:
-        # print "joke not found"
         return HttpResponse('')
 
+    # try to add a JokeRating to the joke. Fail if user already rated joke
     try:
         joke_rating = JokeRating.objects.filter(joke_rater=request.user.joke_rater, joke=joke)
         if joke_rating.count() == 1:
             joke_rating = joke_rating[0]
-            # print joke_rating.rating, "->", rating
             joke_rating.rating = rating
             joke_rating.save()
-            # print "UPDATED RATING: {0}".format(joke_rating)
             return HttpResponse(True)
         elif joke_rating.count() == 0:
             jr = JokeRating.objects.create(rating=rating, joke_rater=request.user.joke_rater, joke=joke)
-            # print "CREATED RATING: {0}".format(jr)
             return HttpResponse(True)
         else:
-            # print "MULTIPLE OBJECTS RETURNED"
             return HttpResponse('')
     except Exception as e:
         print e

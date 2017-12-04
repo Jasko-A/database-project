@@ -21,28 +21,23 @@ def show_jokes(request):
     Page that shows the list of jokes, allows users to click on them
     and see their fields, etc.
     '''
+    # order jokes by their average rating
     jokes = Joke.objects.annotate(avg_rating=Avg('joke_ratings__rating')).order_by('-avg_rating')
 
+    # efficiently rank the jokes instead of using ranking property (can do them all at once)
     prev_value = -1.0
     cur_ranking = 1
     num_repetitions = 1
     for joke in jokes:
+        joke.cur_ranking = cur_ranking
         if joke.avg_rating == prev_value:
-            joke.cur_ranking = cur_ranking
-            print joke.avg_rating, joke.cur_ranking
             num_repetitions += 1
         else:
-            joke.cur_ranking = cur_ranking
-            print joke.avg_rating, joke.cur_ranking
             cur_ranking += num_repetitions
             num_repetitions = 1
             prev_value = joke.avg_rating
 
-
-    context = {
-        'jokes': jokes
-    }
-    return render(request, 'jokerank/jokes.html', context)
+    return render(request, 'jokerank/jokes.html', {'jokes': jokes})
 
 
 @login_required
@@ -76,10 +71,11 @@ def add_joke(request):
 def joke_details(request, joke_id):
     ''' 
     Render a page containing detials about the joke with ID=joke_id.
+    Redirect to home page with error if joke ID is invalid somehow.
     '''
     try:
         joke = Joke.objects.get(id=joke_id)
-        avg_rating = joke.get_current_rating()
+        avg_rating = joke.average_rating
         rating_distribution = joke.get_rating_distribution()
     except Exception as e:
         print "Error @joke_details: {0}.".format(e)
@@ -96,6 +92,8 @@ def joke_details(request, joke_id):
 @require_http_methods(['GET', 'POST'])
 def user_profile(request):
     ''' 
+    GET: show the user profile with a form that they can use to change their features.
+    POST: form has been submitted, check if it is valid, save changes.
     '''
     if request.method == 'GET':
         joke_rater = request.user.joke_rater
@@ -124,7 +122,6 @@ def user_profile(request):
 def signup(request):
     ''' 
     View for creating a username/password/info. 
-    TODO: render errors if they input incorrectly.
     '''
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -134,9 +131,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            print errors
             for message in errors:
-                print "messaging:", message
                 messages.info(request, message)
             return redirect(reverse('user_profile'))
         else:

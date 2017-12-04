@@ -19,11 +19,11 @@
 					<li><h2>Type: </h2><h4>{{ joke.joke_type }}</h4></li>
 					<li><h2>Submitted By: </h2><h4>{{ joke.joke_submitter }}</h4></li>
                     <li><h2>Average Rating: </h2><h4 style="color: green;">
-                        {% with curr_rating=joke.get_current_rating %}
+                        {% with curr_rating=joke.average_rating %}
                             {% if curr_rating == -1 %}
                                 No ratings.
                             {% else %}
-                                {{ joke.get_current_rating|floatformat:"4" }}
+                                {{ joke.average_rating|floatformat:"4" }}
                             {% endif %}
                         {% endwith %}
                     </h4></li>

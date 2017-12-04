@@ -33,9 +33,14 @@ JOKE_TYPES = (
 
 
 class JokeManager(models.Manager):
-    ''' '''
+    ''' 
+    Subclassed manager for the Joke Model. 
+    Supplies class-wide methods (kind of like static methods, apply to entire JokeRating table in the db)
+    '''
     def category_distribution(self):
-        ''' returns [categories], [counts] '''
+        ''' 
+        Returns [categories], [counts] for each type of joke category. 
+        '''
         categories = [t[1] for t in JOKE_CATEGORIES]
         counts = []
         for category in categories:
@@ -43,7 +48,9 @@ class JokeManager(models.Manager):
         return categories, counts
 
     def type_distribution(self):
-        ''' returns [types], [counts] '''
+        ''' 
+        Returns [types], [counts] for each joke type. 
+        '''
         types = [t[1] for t in JOKE_TYPES]
         counts = []
         for joke_type in types:
@@ -53,7 +60,10 @@ class JokeManager(models.Manager):
         return types, counts
 
     def source_distribution(self):
-        ''' '''
+        ''' 
+        Returns [sources], [counts]. 
+        Used for a distribution of who contributed jokes, who did not.
+        '''
         all_sources = ['Class', 'Data Team', 'Website']
         counts = []
         counts.append(self.filter(joke_source__startswith='C').count())
@@ -87,16 +97,21 @@ class Joke(models.Model):
         Returns the ranking of the joke, as a number from 1 - #Jokes.
         Not super efficient, try to avoid using this if possible.
         '''
-        self_avg_rating = self.get_current_rating()
+        self_avg_rating = self.average_rating
         lower_jokes = Joke.objects.annotate(avg_rating=Avg('joke_ratings__rating')).filter(avg_rating__lte=self_avg_rating)
         return Joke.objects.count() - lower_jokes.count() + 1
 
-    def get_current_rating(self):
-        ''' Get mean rating of a joke. Returns an int or string. '''
-        return self.joke_ratings.all().aggregate(Avg('rating'))['rating__avg']
+    @property
+    def average_rating(self):
+        ''' 
+        Get mean rating of a joke. Returns an int or string. 
+        '''
+        return self.joke_ratings.all().aggregate(Avg('rating'))['rating__avg'] or 0.0
 
     def get_rating_distribution(self):
-        ''' Returns a list of how many ratings = 1,2,3,4,5 '''
+        ''' 
+        Returns a list of how many ratings = 1,2,3,4,5 
+        '''
         from api.models import JokeRating
         joke_ratings = JokeRating.objects.filter(joke=self)
         if joke_ratings.count():
@@ -115,29 +130,31 @@ class JokeRatingManager(models.Manager):
     Supplies class-wide methods (kind of like static methods, apply to entire JokeRating table in the db)
     '''
     def avg_ratings_joke_type_dist(self):
-        ''' Returns [types], [ratings] '''
+        ''' 
+        Returns [types], [average ratings] for each joke type. 
+        '''
         ratings = []
         types = [t[1] for t in JOKE_TYPES]
         for joke_type in types:
-            avg_rating = self.filter(
-                    joke__joke_type=joke_type
-                ).aggregate(Avg('rating'))
+            avg_rating = self.filter(joke__joke_type=joke_type).aggregate(Avg('rating'))
             ratings.append(avg_rating['rating__avg'])
         return types, ratings
 
     def avg_ratings_joke_category_dist(self):
-        ''' '''
+        ''' 
+        Returns [categories], [average ratings] for each joke category
+        '''
         ratings = []
         categories = [t[1] for t in JOKE_CATEGORIES]
         for category in categories:
-            avg_rating = self.filter(
-                    joke__category=category
-                ).aggregate(Avg('rating'))
+            avg_rating = self.filter(joke__category=category).aggregate(Avg('rating'))
             ratings.append(avg_rating['rating__avg'])
         return categories, ratings
 
     def num_ratings_joke_type_dist(self):
-        ''' '''
+        ''' 
+        Returns [types], [number of ratings] for each joke type.
+        '''
         counts = []
         types = [t[1] for t in JOKE_TYPES]
         for joke_type in types:
@@ -146,7 +163,9 @@ class JokeRatingManager(models.Manager):
         return types, counts
 
     def num_ratings_joke_category_dist(self):
-        ''' '''
+        ''' 
+        Returns [categories], [number of ratings] for each joke category.
+        '''
         counts = []
         categories = [t[1] for t in JOKE_CATEGORIES]
         for category in categories:
@@ -171,10 +190,16 @@ class JokeRating(models.Model):
         return "{0} | {1} | {2}".format(self.joke, self.joke_rater.joke_submitter_id, self.rating)
 
 
+
 class JokeRaterManager(models.Manager):
-    ''' '''
+    ''' 
+    Subclassed manager for the JokeRater Model. 
+    Supplies class-wide methods (kind of like static methods, apply to entire JokeRater table in the db)
+    '''
     def preferred_joke_genre_dist(self):
-        ''' '''
+        ''' 
+        Returns [categories], [counts] for each joke genre/category.
+        '''
         counts = []
         genres = [t[1] for t in JOKE_CATEGORIES]
         for genre in genres:
@@ -182,7 +207,9 @@ class JokeRaterManager(models.Manager):
         return genres, counts
     
     def preferred_joke_type_dist(self):
-        ''' '''
+        ''' 
+        Returns [types], [counts] for each joke type.
+        '''
         counts = []
         types = [t[1] for t in JOKE_TYPES]
         for joke_type in types:
@@ -192,9 +219,7 @@ class JokeRaterManager(models.Manager):
 class JokeRater(models.Model):
     '''
     A user who went on Google Forms and filled out a form. Not the same as the user that logs in, although
-    they are associated.
-
-    TODO: create a relationship between this and a user account (optional).
+    they can be associated optionally.
 
     Related Names: user_ratings
     '''

@@ -43,30 +43,6 @@ class SignUpForm(UserCreationForm):
             'class': 'form-control'
         }
 
-    # def clean_joke_submitter_id(self):
-    #     '''
-    #     Check if the joke_submitter_id actually points to a joke rater.
-    #     '''
-    #     cleaned_data = self.cleaned_data
-    #     if 'joke_submitter_id' in cleaned_data.keys():
-    #         jsmid = cleaned_data.get('joke_submitter_id')
-    #         if not jsmid: return jsmid
-    #         try:
-    #             jsm = JokeRater.objects.get(joke_submitter_id=jsmid)
-    #         except JokeRater.DoesNotExist:
-    #             raise forms.ValidationError('There is no Joke Rater with id = {0}. '
-    #                 'Send us an email if you think this is wrong.'.format(jsmid))
-    #         except JokeRater.MultipleObjectsReturned:
-    #             raise forms.ValidationError('There are multiple JokeRaters with the same ID = {0}.'.format(
-    #                 jsmid))
-    #         except Exception as e:
-    #             raise forms.ValidationError(e)
-
-    #         if jsm.user:
-    #             raise forms.ValidationError('That joke rater is already tied to another user.')
-
-    #     return cleaned_data.get('joke_submitter_id')
-
     def save(self, commit=True):
         '''
         On saving the model form, attempt to create a relationship between a JokeRater and
@@ -194,6 +170,7 @@ MOVIES = (
 
 class EditJokeRaterForm(forms.ModelForm):
     '''
+    Form for editing your user account after it is created.
     '''
     class Meta:
         model = JokeRater
