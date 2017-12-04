@@ -23,10 +23,11 @@
                             {% if curr_rating == -1 %}
                                 No ratings.
                             {% else %}
-                                {{ joke.get_current_rating|floatformat:"2" }}
+                                {{ joke.get_current_rating|floatformat:"4" }}
                             {% endif %}
                         {% endwith %}
                     </h4></li>
+                    <li><h2>Ranking: </h2><h4>{{ joke.ranking }}</h4></li>
 				</ul>
 			</div>
 			<div class="col-lg-9">

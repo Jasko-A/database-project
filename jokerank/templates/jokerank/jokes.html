@@ -16,6 +16,8 @@
 			<tr>
 				<th style="width: 74%;">Text</th>
 				<th style="width: 12%">Rating (Click Me!)</th>
+				<th style="width: 8%">Ranking</th>
+				<th style="width: 8%">Avg. Rating</th>
 				<th style="width: 12%;">Actions</th>
 			</tr>
 		</thead>
@@ -34,6 +36,8 @@
 							{% endif %}
 						{% endwith %}
 					</td>
+					<td>{{ joke.cur_ranking }}</td>
+					<td>{{ joke.get_current_rating|floatformat:4 }}</td>
 					<td>
 						<a style="width: 100%;" class="btn btn-default btn-outline-info" href="{% url 'jokerank:joke_details' joke.id %}">Details</button>
 					</td>
@@ -52,6 +56,19 @@
 {% block scripts %}
 <script type="text/javascript">
 
+	/* On page load. */
+	$(document).ready(function() {
+		$('#all_jokes_table').DataTable({
+			"paging": false,
+			"order": [[3, 'desc']],
+			"searching": false,
+			"info": false
+		});
+	});
+
+	/* On clicking any of the stars on the page.
+	 * Submit the updated rating to the server.
+	 */
 	$(document).off('click', '.star').on('click', '.star', function(e) {
 		var $td = $(this).closest('td');
 		var $spans = $td.find('.star');
@@ -103,6 +120,19 @@
 
 	.checked {
 	    color: orange;
+	}
+
+	div.dataTables_paginate {
+		text-align: center;
+	}
+
+	div.dataTables_paginate > a,
+	div.dataTables_paginate > span > a {
+		margin: 1em;
+	}
+
+	a.paginate_button.current {
+		color: red;
 	}
 </style>
 {% endblock %}

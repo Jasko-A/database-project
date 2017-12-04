@@ -81,17 +81,19 @@ class Joke(models.Model):
     def __str__(self):
         return 'Joke {0} | {1} | {2}'.format(self.id, self.category, self.joke_type)
 
+    @property
+    def ranking(self):
+        ''' 
+        Returns the ranking of the joke, as a number from 1 - #Jokes.
+        Not super efficient, try to avoid using this if possible.
+        '''
+        self_avg_rating = self.get_current_rating()
+        lower_jokes = Joke.objects.annotate(avg_rating=Avg('joke_ratings__rating')).filter(avg_rating__lte=self_avg_rating)
+        return Joke.objects.count() - lower_jokes.count() + 1
+
     def get_current_rating(self):
         ''' Get mean rating of a joke. Returns an int or string. '''
-        from api.models import JokeRating
-        joke_ratings = JokeRating.objects.filter(joke=self)
-        if joke_ratings.count():
-            avg = 0.0
-            for jrating in joke_ratings:
-                avg += jrating.rating
-            return avg / joke_ratings.count()
-        else:
-            return -1
+        return self.joke_ratings.all().aggregate(Avg('rating'))['rating__avg']
 
     def get_rating_distribution(self):
         ''' Returns a list of how many ratings = 1,2,3,4,5 '''

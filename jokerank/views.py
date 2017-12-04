@@ -7,6 +7,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
 from django.contrib import messages
+from django.db.models import Avg
 
 from .forms import SignUpForm, CreateJokeForm, EditJokeRaterForm
 from api.models import Joke, JokeRating
@@ -20,8 +21,26 @@ def show_jokes(request):
     Page that shows the list of jokes, allows users to click on them
     and see their fields, etc.
     '''
+    jokes = Joke.objects.annotate(avg_rating=Avg('joke_ratings__rating')).order_by('-avg_rating')
+
+    prev_value = -1.0
+    cur_ranking = 1
+    num_repetitions = 1
+    for joke in jokes:
+        if joke.avg_rating == prev_value:
+            joke.cur_ranking = cur_ranking
+            print joke.avg_rating, joke.cur_ranking
+            num_repetitions += 1
+        else:
+            joke.cur_ranking = cur_ranking
+            print joke.avg_rating, joke.cur_ranking
+            cur_ranking += num_repetitions
+            num_repetitions = 1
+            prev_value = joke.avg_rating
+
+
     context = {
-        'jokes': Joke.objects.all()
+        'jokes': jokes
     }
     return render(request, 'jokerank/jokes.html', context)
 
